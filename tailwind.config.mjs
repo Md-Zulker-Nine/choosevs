@@ -47,14 +47,7 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
       },
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: 'none',
-          },
-        },
-      },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };

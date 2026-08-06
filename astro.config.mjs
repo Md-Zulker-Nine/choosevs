@@ -1,16 +1,14 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
+import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 
 export default defineConfig({
   site: 'https://choosevs.com',
   integrations: [
+    tailwind(),
     sitemap(),
     mdx(),
   ],
-  vite: {
-    plugins: [tailwindcss()],
-  }
 });
