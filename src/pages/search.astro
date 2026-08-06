@@ -1,0 +1,176 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CATEGORIES } from '../lib/constants';
+
+const POPULAR_COMPARISONS = [
+  { title: 'iPhone 16 Pro vs Samsung Galaxy S25 Ultra', category: 'tech' },
+  { title: 'MacBook Pro M4 vs Dell XPS 16', category: 'tech' },
+  { title: 'Tesla Model Y vs Ford Mustang Mach-E', category: 'cars' },
+  { title: 'Bitcoin vs Ethereum: Best Long-Term Hold', category: 'crypto' },
+  { title: 'GPT-5 vs Claude 4 Opus: Best AI Model', category: 'ai-models' },
+  { title: 'Japan vs South Korea: Best for Expats', category: 'countries' },
+  { title: 'Bali vs Thailand Islands: Best Tropical Escape', category: 'travel' },
+  { title: 'Netflix vs Disney+: Best Streaming', category: 'movies' },
+];
+
+function getCategory(slug: string) {
+  return CATEGORIES.find(c => c.slug === slug);
+}
+---
+
+<BaseLayout
+  title="Search - ChooseVS"
+  description="Search for any comparison on ChooseVS. Find expert analysis on technology, cars, travel, crypto, and more."
+>
+  <section class="section-padding">
+    <div class="container-custom">
+      <div class="max-w-3xl mx-auto">
+        <!-- Search Header -->
+        <div class="text-center mb-12">
+          <h1 class="text-4xl md:text-5xl font-bold text-surface-900 mb-4">
+            <span class="gradient-text">Search</span> Comparisons
+          </h1>
+          <p class="text-lg text-surface-600">
+            Find expert comparisons across all categories. Search by product name, category, or topic.
+          </p>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative mb-8">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            id="search-page-input"
+            placeholder="Search comparisons... e.g. iPhone, laptop, Bitcoin"
+            class="w-full pl-12 pr-4 py-4 text-lg rounded-2xl border border-surface-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            autofocus
+          />
+        </div>
+
+        <!-- Results Container (populated by JS) -->
+        <div id="search-results" class="mb-12">
+          <!-- Empty State -->
+          <div id="empty-state" class="text-center py-16">
+            <div class="text-5xl mb-4">🔍</div>
+            <h3 class="text-xl font-bold text-surface-900 mb-2">Start Your Search</h3>
+            <p class="text-surface-600 max-w-md mx-auto">
+              Type a product name, brand, or topic above to find relevant comparisons across our database.
+            </p>
+          </div>
+
+          <!-- No Results State (hidden by default) -->
+          <div id="no-results" class="hidden text-center py-16">
+            <div class="text-5xl mb-4">😕</div>
+            <h3 class="text-xl font-bold text-surface-900 mb-2">No Results Found</h3>
+            <p class="text-surface-600 max-w-md mx-auto">
+              Try different keywords or browse our popular comparisons below.
+            </p>
+          </div>
+
+          <!-- Results Grid (hidden by default) -->
+          <div id="results-grid" class="hidden">
+            <h2 class="text-xl font-bold text-surface-900 mb-4">Search Results</h2>
+            <div id="results-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </div>
+        </div>
+
+        <!-- Popular Comparisons -->
+        <div class="border-t border-surface-200 pt-12">
+          <h2 class="text-2xl font-bold text-surface-900 mb-6 text-center">Popular Comparisons</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {POPULAR_COMPARISONS.map((item) => {
+              const cat = getCategory(item.category);
+              return (
+                <a
+                  href={`/category/${item.category}`}
+                  class="card p-4 group cursor-pointer"
+                >
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-sm">{cat?.icon}</span>
+                    <span class="badge-primary text-xs">{cat?.name}</span>
+                  </div>
+                  <h3 class="text-sm font-semibold text-surface-900 group-hover:text-primary-600 transition-colors">
+                    {item.title}
+                  </h3>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const searchData = [
+      { title: 'iPhone 16 Pro vs Samsung Galaxy S25 Ultra', category: 'tech', slug: 'iphone-16-pro-vs-samsung-galaxy-s25-ultra' },
+      { title: 'MacBook Pro M4 vs Dell XPS 16', category: 'tech', slug: 'macbook-pro-m4-vs-dell-xps-16' },
+      { title: 'Sony WH-1000XM6 vs Bose QuietComfort Ultra', category: 'tech', slug: 'sony-wh1000xm6-vs-bose-quietcomfort-ultra' },
+      { title: 'iPad Pro M4 vs Samsung Tab S10 Ultra', category: 'tech', slug: 'ipad-pro-m4-vs-samsung-tab-s10-ultra' },
+      { title: 'Google Pixel 9 Pro vs OnePlus 13', category: 'tech', slug: 'google-pixel-9-pro-vs-oneplus-13' },
+      { title: 'Tesla Model Y vs Ford Mustang Mach-E', category: 'cars', slug: 'tesla-model-y-vs-ford-mustang-mach-e' },
+      { title: 'BMW iX vs Mercedes EQS SUV', category: 'cars', slug: 'bmw-ix-vs-mercedes-eqs-suv' },
+      { title: 'Toyota Camry vs Honda Accord 2026', category: 'cars', slug: 'toyota-camry-vs-honda-accord-2026' },
+      { title: 'Porsche Taycan vs Tesla Model S Plaid', category: 'cars', slug: 'porsche-taycan-vs-tesla-model-s-plaid' },
+      { title: 'Bitcoin vs Ethereum', category: 'crypto', slug: 'bitcoin-vs-ethereum-long-term' },
+      { title: 'Solana vs Ethereum', category: 'crypto', slug: 'solana-vs-ethereum-smart-contracts' },
+      { title: 'USDC vs USDT', category: 'crypto', slug: 'usdc-vs-usdt-stablecoin' },
+      { title: 'GPT-5 vs Claude 4 Opus', category: 'ai-models', slug: 'gpt-5-vs-claude-4-opus' },
+      { title: 'Gemini 3 Pro vs GPT-5', category: 'ai-models', slug: 'gemini-3-pro-vs-gpt-5-multimodal' },
+      { title: 'Japan vs South Korea', category: 'countries', slug: 'japan-vs-south-korea-expats' },
+      { title: 'Portugal vs Spain', category: 'countries', slug: 'portugal-vs-spain-retirement' },
+      { title: 'Canada vs Australia', category: 'countries', slug: 'canada-vs-australia-immigration' },
+      { title: 'Bali vs Thailand Islands', category: 'travel', slug: 'bali-vs-thailand-islands' },
+      { title: 'Paris vs Rome', category: 'travel', slug: 'paris-vs-rome-city-break' },
+      { title: 'Tokyo vs Seoul', category: 'travel', slug: 'tokyo-vs-seoul-asian-city' },
+      { title: 'Oppenheimer vs Barbie', category: 'movies', slug: 'oppenheimer-vs-barbie' },
+      { title: 'Netflix vs Disney+', category: 'movies', slug: 'netflix-vs-disney-plus' },
+    ];
+
+    const searchInput = document.getElementById('search-page-input');
+    const emptyState = document.getElementById('empty-state');
+    const noResults = document.getElementById('no-results');
+    const resultsGrid = document.getElementById('results-grid');
+    const resultsList = document.getElementById('results-list');
+
+    searchInput?.addEventListener('input', (e) => {
+      const query = e.target.value.trim().toLowerCase();
+
+      if (!query) {
+        emptyState.classList.remove('hidden');
+        noResults.classList.add('hidden');
+        resultsGrid.classList.add('hidden');
+        return;
+      }
+
+      const results = searchData.filter(item =>
+        item.title.toLowerCase().includes(query) ||
+        item.category.toLowerCase().includes(query)
+      );
+
+      emptyState.classList.add('hidden');
+
+      if (results.length === 0) {
+        noResults.classList.remove('hidden');
+        resultsGrid.classList.add('hidden');
+        return;
+      }
+
+      noResults.classList.add('hidden');
+      resultsGrid.classList.remove('hidden');
+
+      resultsList.innerHTML = results.map(item => `
+        <a href="/compare/${item.slug}" class="card p-4 group cursor-pointer">
+          <span class="badge-primary text-xs mb-2 inline-block">${item.category}</span>
+          <h3 class="text-sm font-semibold text-surface-900 group-hover:text-primary-600 transition-colors">
+            ${item.title}
+          </h3>
+        </a>
+      `).join('');
+    });
+  </script>
+</BaseLayout>

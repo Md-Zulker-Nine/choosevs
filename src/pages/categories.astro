@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CATEGORIES } from '../lib/constants';
+---
+
+<BaseLayout
+  title="Categories - ChooseVS"
+  description="Browse all comparison categories including Technology, Movies & TV, Countries, Cars, Travel, Cryptocurrency, and AI Models."
+>
+  <section class="section-padding">
+    <div class="container-custom">
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-surface-900 mb-4">
+          All <span class="gradient-text">Categories</span>
+        </h1>
+        <p class="text-lg text-surface-600">
+          Explore our comprehensive comparison categories. Find the right choice for any decision, from tech gadgets to travel destinations.
+        </p>
+      </div>
+
+      <!-- Categories Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {CATEGORIES.map((category) => (
+          <a
+            href={`/category/${category.slug}`}
+            class="card-premium p-8 group cursor-pointer"
+          >
+            <div class="flex items-start gap-4">
+              <div class="text-4xl flex-shrink-0 mt-1">
+                {category.icon}
+              </div>
+              <div class="flex-1">
+                <h2 class="text-xl font-bold text-surface-900 group-hover:text-primary-600 transition-colors mb-2">
+                  {category.name}
+                </h2>
+                <p class="text-surface-600 text-sm leading-relaxed mb-4">
+                  {category.description}
+                </p>
+                <span class="inline-flex items-center text-sm font-semibold text-primary-600 group-hover:text-primary-700">
+                  Browse Comparisons
+                  <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

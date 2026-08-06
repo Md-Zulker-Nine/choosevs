@@ -1,0 +1,674 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../lib/constants';
+
+interface ComparisonData {
+  slug: string;
+  title: string;
+  category: string;
+  entityA: {
+    name: string;
+    tagline: string;
+    image: string;
+    color: string;
+    score: number;
+  };
+  entityB: {
+    name: string;
+    tagline: string;
+    image: string;
+    color: string;
+    score: number;
+  };
+  specs: Array<{ label: string; valueA: string; valueB: string; winner?: 'a' | 'b' | 'tie' }>;
+  prosA: string[];
+  consA: string[];
+  prosB: string[];
+  consB: string[];
+  verdict: {
+    winner: 'a' | 'b' | 'tie';
+    summary: string;
+    recommendation: string;
+  };
+  faqs: Array<{ question: string; answer: string }>;
+  related: Array<{ slug: string; title: string }>;
+}
+
+export const comparisons: Record<string, ComparisonData> = {
+  'iphone-16-pro-vs-samsung-galaxy-s25': {
+    slug: 'iphone-16-pro-vs-samsung-galaxy-s25',
+    title: 'iPhone 16 Pro vs Samsung Galaxy S25: Which Flagship Wins?',
+    category: 'Technology',
+    entityA: { name: 'iPhone 16 Pro', tagline: 'Apple\'s most advanced Pro iPhone', image: '📱', color: 'gray', score: 9.2 },
+    entityB: { name: 'Samsung Galaxy S25', tagline: 'AI-powered Android excellence', image: '📱', color: 'blue', score: 9.0 },
+    specs: [
+      { label: 'Display', valueA: '6.3" Super Retina XDR OLED, 120Hz ProMotion', valueB: '6.2" Dynamic AMOLED 2X, 120Hz', winner: 'a' },
+      { label: 'Processor', valueA: 'A18 Pro (3nm)', valueB: 'Snapdragon 8 Elite (3nm)', winner: 'a' },
+      { label: 'RAM', valueA: '8GB', valueB: '12GB', winner: 'b' },
+      { label: 'Storage', valueA: '128GB / 256GB / 512GB / 1TB', valueB: '128GB / 256GB / 512GB', winner: 'a' },
+      { label: 'Main Camera', valueA: '48MP + 48MP Ultra Wide + 12MP 5x Telephoto', valueB: '50MP + 12MP Ultra Wide + 10MP 3x Telephoto', winner: 'a' },
+      { label: 'Battery', valueA: '3582 mAh, 27W wired', valueB: '4000 mAh, 25W wired', winner: 'b' },
+      { label: 'OS', valueA: 'iOS 18', valueB: 'Android 15 / One UI 7', winner: 'tie' },
+      { label: 'Starting Price', valueA: '$999', valueB: '$799', winner: 'b' },
+      { label: 'Weight', valueA: '199g', valueB: '162g', winner: 'b' },
+      { label: 'Water Resistance', valueA: 'IP68 (6m for 30min)', valueB: 'IP68 (1.5m for 30min)', winner: 'a' },
+    ],
+    prosA: ['Superior video recording capabilities', 'Best-in-class chip performance', 'Seamless Apple ecosystem integration', '5x optical zoom telephoto lens', 'Premium titanium build quality', '7+ years of software updates'],
+    consA: ['Higher starting price', 'Limited customization vs Android', '8GB RAM may limit multitasking', 'No satellite connectivity in all regions'],
+    prosB: ['More affordable price point', 'Superior AI features (Galaxy AI)', 'Lighter and more compact', 'More RAM for multitasking', 'Highly customizable interface', 'Excellent display quality'],
+    consB: ['Fewer years of OS updates', 'Weaker zoom camera', 'No titanium build', 'Battery charging slightly slower in real-world use'],
+    verdict: {
+      winner: 'a',
+      summary: 'The iPhone 16 Pro edges out the Galaxy S25 with superior processing power, better camera versatility, and longer software support. However, the Galaxy S25 offers better value for money and a lighter design.',
+      recommendation: 'Choose the iPhone 16 Pro if you prioritize camera quality, video, and ecosystem integration. Choose the Galaxy S25 if you want AI features, a lighter phone, and better value.',
+    },
+    faqs: [
+      { question: 'Which phone has a better camera?', answer: 'The iPhone 16 Pro has a more versatile camera system with 5x optical zoom and superior video recording. The Galaxy S25 excels in computational photography and AI-enhanced shots.' },
+      { question: 'Is the Galaxy S25 good value for money?', answer: 'At $799, the Galaxy S25 offers excellent value with flagship performance, AI features, and a great display. It\'s $200 less than the iPhone 16 Pro.' },
+      { question: 'Which phone has better battery life?', answer: 'The Galaxy S25 has a larger 4000mAh battery vs 3582mAh, but real-world performance depends on usage. Both easily last a full day with moderate use.' },
+      { question: 'How long will each phone receive updates?', answer: 'The iPhone 16 Pro will receive iOS updates for 7+ years. The Galaxy S25 will get 7 years of security updates but major OS updates for a shorter period.' },
+    ],
+    related: [
+      { slug: 'macbook-pro-vs-dell-xps-15', title: 'MacBook Pro vs Dell XPS 15' },
+      { slug: 'tesla-model-3-vs-bmw-i4', title: 'Tesla Model 3 vs BMW i4' },
+      { slug: 'chatgpt-vs-claude-ai', title: 'ChatGPT vs Claude AI' },
+    ],
+  },
+  'macbook-pro-vs-dell-xps-15': {
+    slug: 'macbook-pro-vs-dell-xps-15',
+    title: 'MacBook Pro vs Dell XPS 15: Best Premium Laptop?',
+    category: 'Technology',
+    entityA: { name: 'MacBook Pro 16"', tagline: 'M4 Pro power in a sleek design', image: '💻', color: 'gray', score: 9.4 },
+    entityB: { name: 'Dell XPS 15', tagline: 'Windows productivity powerhouse', image: '💻', color: 'blue', score: 8.8 },
+    specs: [
+      { label: 'Processor', valueA: 'Apple M4 Pro / M4 Max', valueB: 'Intel Core Ultra 7 / Ultra 9', winner: 'a' },
+      { label: 'RAM', valueA: '24GB / 32GB / 48GB Unified', valueB: '16GB / 32GB / 64GB DDR5', winner: 'tie' },
+      { label: 'Display', valueA: '16.2" Liquid Retina XDR, 120Hz', valueB: '15.6" OLED 3K, 60Hz', winner: 'a' },
+      { label: 'Battery Life', valueA: 'Up to 22 hours', valueB: 'Up to 13 hours', winner: 'a' },
+      { label: 'Weight', valueA: '2.14kg', valueB: '1.86kg', winner: 'b' },
+      { label: 'Ports', valueA: '3x Thunderbolt 4, HDMI, SD, MagSafe', valueB: '2x Thunderbolt 4, 1x USB-C, SD', winner: 'a' },
+      { label: 'Starting Price', valueA: '$2,499', valueB: '$1,299', winner: 'b' },
+      { label: 'GPU', valueA: 'M4 Pro 18-core / M4 Max 32-core', valueB: 'Intel Arc / NVIDIA RTX 4050', winner: 'a' },
+    ],
+    prosA: ['Exceptional battery life (22 hours)', 'Best-in-class M4 Pro/Max performance', 'Gorgeous XDR display with 120Hz', 'Silent under most workloads', 'Excellent build quality', 'macOS optimization'],
+    consA: ['Higher starting price', 'Limited gaming library', 'Non-upgradeable RAM/storage', 'Notch in display'],
+    prosB: ['More affordable entry price', 'OLED display option', 'More configuration flexibility', 'Familiar Windows ecosystem', 'Lighter design', 'Good port selection'],
+    consB: ['Shorter battery life', 'Fan noise under load', 'Performance throttling at times', '60Hz display on OLED panel'],
+    verdict: {
+      winner: 'a',
+      summary: 'The MacBook Pro 16" delivers superior performance, battery life, and display quality. The Dell XPS 15 remains a compelling Windows alternative at a lower price point.',
+      recommendation: 'Choose MacBook Pro for creative professionals who need all-day battery and maximum performance. Choose Dell XPS 15 if you need Windows-specific software or a lower price.',
+    },
+    faqs: [
+      { question: 'Is MacBook Pro good for gaming?', answer: 'While M4 Pro/Max has improved gaming capabilities, the MacBook Pro is not ideal for gaming due to limited game availability on macOS. The XPS 15 with RTX 4050 is better for Windows gaming.' },
+      { question: 'Can the XPS 15 RAM be upgraded?', answer: 'Some XPS 15 configurations allow RAM upgrades, but many recent models have soldered RAM. Check specific configuration details before purchasing.' },
+      { question: 'Which is better for video editing?', answer: 'The MacBook Pro is generally considered superior for video editing, with optimized apps like Final Cut Pro, excellent color-accurate display, and hardware-accelerated codecs.' },
+    ],
+    related: [
+      { slug: 'iphone-16-pro-vs-samsung-galaxy-s25', title: 'iPhone 16 Pro vs Samsung Galaxy S25' },
+      { slug: 'chatgpt-vs-claude-ai', title: 'ChatGPT vs Claude AI' },
+      { slug: 'netflix-vs-disney-plus', title: 'Netflix vs Disney+' },
+    ],
+  },
+  'chatgpt-vs-claude-ai': {
+    slug: 'chatgpt-vs-claude-ai',
+    title: 'ChatGPT vs Claude AI: Best AI Assistant in 2025?',
+    category: 'AI Models',
+    entityA: { name: 'ChatGPT (GPT-4o)', tagline: 'OpenAI\'s most capable AI model', image: '🤖', color: 'emerald', score: 9.1 },
+    entityB: { name: 'Claude 3.5 Sonnet', tagline: 'Anthropic\'s helpful, honest AI', image: '🤖', color: 'purple', score: 9.0 },
+    specs: [
+      { label: 'Developer', valueA: 'OpenAI', valueB: 'Anthropic', winner: 'tie' },
+      { label: 'Model', valueA: 'GPT-4o / GPT-4 Turbo', valueB: 'Claude 3.5 Sonnet / Opus', winner: 'tie' },
+      { label: 'Context Window', valueA: '128K tokens', valueB: '200K tokens', winner: 'b' },
+      { label: 'Multimodal', valueA: 'Text, Image, Audio, Video', valueB: 'Text, Image', winner: 'a' },
+      { label: 'Free Tier', valueA: 'Yes (GPT-4o mini)', valueB: 'Yes (limited)', winner: 'a' },
+      { label: 'Paid Plan', valueA: '$20/month (Plus)', valueB: '$20/month (Pro)', winner: 'tie' },
+      { label: 'API Access', valueA: 'Yes', valueB: 'Yes', winner: 'tie' },
+      { label: 'Strengths', valueA: 'Multimodal, speed, creativity', valueB: 'Long context, nuance, safety', winner: 'tie' },
+    ],
+    prosA: ['Multimodal: text, image, audio, video input', 'Widest ecosystem of plugins and integrations', 'Fast response times', 'Strong creative writing abilities', 'Custom GPTs marketplace', 'Voice mode available'],
+    consA: ['Smaller context window than Claude', 'Can be verbose in responses', 'Less nuanced in complex analysis', 'Occasional hallucination issues'],
+    prosB: ['Larger 200K context window', 'More nuanced and thoughtful responses', 'Stronger safety and alignment', 'Better at complex reasoning', 'More concise and accurate outputs', 'Excellent for document analysis'],
+    consB: 'No audio/video input'.split(', ').map(s => s.trim()).concat(['Limited plugin ecosystem', 'Slower in some tasks', 'No custom model marketplace']),
+    consB: ['No audio/video input', 'Limited plugin ecosystem', 'Slower in some tasks', 'No custom model marketplace'],
+    verdict: {
+      winner: 'tie',
+      summary: 'ChatGPT and Claude excel in different areas. ChatGPT leads in multimodal capabilities and ecosystem, while Claude excels in nuanced analysis and handling large documents.',
+      recommendation: 'Choose ChatGPT for multimedia tasks, creative work, and broad integrations. Choose Claude for deep analysis, document processing, and nuanced reasoning.',
+    },
+    faqs: [
+      { question: 'Which AI is better for coding?', answer: 'Both are excellent for coding. ChatGPT has a slight edge with Code Interpreter and wider tool integration. Claude is praised for understanding complex codebases due to its larger context window.' },
+      { question: 'Is Claude safer than ChatGPT?', answer: 'Both have safety measures. Anthropic designed Claude with "Constitutional AI" for alignment. OpenAI has its own safety frameworks. Neither is significantly safer than the other.' },
+      { question: 'Which has a better free tier?', answer: 'ChatGPT offers a more capable free tier with GPT-4o mini. Claude\'s free tier has more limited usage but still provides access to Claude 3.5 Sonnet for lighter tasks.' },
+      { question: 'Can I use both for different tasks?', answer: 'Absolutely. Many professionals use ChatGPT for brainstorming and multimodal tasks, while using Claude for deep analysis, document review, and nuanced writing.' },
+    ],
+    related: [
+      { slug: 'iphone-16-pro-vs-samsung-galaxy-s25', title: 'iPhone 16 Pro vs Samsung Galaxy S25' },
+      { slug: 'macbook-pro-vs-dell-xps-15', title: 'MacBook Pro vs Dell XPS 15' },
+      { slug: 'netflix-vs-disney-plus', title: 'Netflix vs Disney+' },
+    ],
+  },
+  'bitcoin-vs-ethereum': {
+    slug: 'bitcoin-vs-ethereum',
+    title: 'Bitcoin vs Ethereum: Which Crypto Is the Better Investment?',
+    category: 'Cryptocurrency',
+    entityA: { name: 'Bitcoin (BTC)', tagline: 'Digital gold — the original cryptocurrency', image: '₿', color: 'orange', score: 8.8 },
+    entityB: { name: 'Ethereum (ETH)', tagline: 'Programmable money and smart contracts', image: '⟠', color: 'blue', score: 8.6 },
+    specs: [
+      { label: 'Launch Year', valueA: '2009', valueB: '2015', winner: 'a' },
+      { label: 'Market Cap Rank', valueA: '#1', valueB: '#2', winner: 'a' },
+      { label: 'Consensus', valueA: 'Proof of Work', valueB: 'Proof of Stake', winner: 'tie' },
+      { label: 'Block Time', valueA: '~10 minutes', valueB: '~12 seconds', winner: 'b' },
+      { label: 'Max Supply', valueA: '21 million (fixed)', valueB: 'No hard cap', winner: 'a' },
+      { label: 'Use Case', valueA: 'Store of value, digital gold', valueB: 'Smart contracts, DeFi, dApps', winner: 'tie' },
+      { label: 'Smart Contracts', valueA: 'Limited (Lightning)', valueA: 'Full support (Solidity)', valueB: 'Full support (Solidity)', winner: 'b' },
+      { label: 'Energy Use', valueA: 'High (PoW)', valueB: 'Very low (PoS)', winner: 'b' },
+      { label: 'Ecosystem', valueA: 'Store of value focus', valueB: 'DeFi, NFTs, DAOs, L2s', winner: 'b' },
+    ],
+    entityA_fixed: undefined,
+    prosA: ['First-mover advantage and strongest brand recognition', 'Fixed supply of 21M creates scarcity', 'Most widely adopted cryptocurrency', 'Institutional adoption (ETFs, corporate treasuries)', 'Proven 15+ year security track record', 'Simplest and most battle-tested protocol'],
+    consA: ['Slower transaction speeds', 'Limited programmability', 'High energy consumption', 'No smart contract functionality at base layer'],
+    prosB: ['Smart contract platform enables DeFi and dApps', 'Faster block times (~12s vs ~10min)', 'Proof of Stake is energy efficient', 'Massive developer ecosystem', 'Yield earning through staking', 'EIP-1559 burns ETH (deflationary pressure)'],
+    consB: 'No fixed supply cap'.split(', ').map(s => s.trim()).concat(['More complex = larger attack surface', 'High gas fees during congestion', 'Inflationary without sufficient burn', 'Centralization concerns with Lido']),
+    consB: ['No fixed supply cap', 'More complex = larger attack surface', 'High gas fees during congestion', 'Centralization concerns with Lido staking'],
+    verdict: {
+      winner: 'tie',
+      summary: 'Bitcoin and Ethereum serve fundamentally different purposes. Bitcoin is digital gold — a store of value. Ethereum is a programmable platform powering DeFi, NFTs, and Web3 applications.',
+      recommendation: 'Choose Bitcoin for long-term store of value and portfolio diversification. Choose Ethereum for exposure to DeFi, smart contracts, and the broader Web3 ecosystem.',
+    },
+    faqs: [
+      { question: 'Which is a better long-term investment?', answer: 'Bitcoin is often seen as a safer long-term hold due to its fixed supply and store-of-value narrative. Ethereum offers higher growth potential through its utility but with more complexity risk.' },
+      { question: 'Can I stake both?', answer: 'Ethereum supports native staking for yield. Bitcoin does not natively support staking, but some platforms offer yield on BTC through lending (not true staking).' },
+      { question: 'Which has lower fees?', answer: 'Neither has consistently low fees during network congestion. Bitcoin Lightning Network enables cheap transfers. Ethereum Layer 2 solutions (Arbitrum, Optimism) reduce fees significantly.' },
+      { question: 'Are Bitcoin and Ethereum competitors?', answer: 'They serve different primary purposes. BTC is digital gold; ETH is a computation platform. Many investors hold both as they complement each other in a crypto portfolio.' },
+    ],
+    related: [
+      { slug: 'chatgpt-vs-claude-ai', title: 'ChatGPT vs Claude AI' },
+      { slug: 'macbook-pro-vs-dell-xps-15', title: 'MacBook Pro vs Dell XPS 15' },
+      { slug: 'tesla-model-3-vs-bmw-i4', title: 'Tesla Model 3 vs BMW i4' },
+    ],
+  },
+  'toyota-camry-vs-honda-accord': {
+    slug: 'toyota-camry-vs-honda-accord',
+    title: 'Toyota Camry vs Honda Accord: Best Midsize Sedan?',
+    category: 'Cars',
+    entityA: { name: 'Toyota Camry 2025', tagline: 'All-hybrid efficiency meets reliability', image: '🚗', color: 'red', score: 8.9 },
+    entityB: { name: 'Honda Accord 2025', tagline: 'Sporty refinement and tech-forward', image: '🚗', color: 'blue', score: 8.8 },
+    specs: [
+      { label: 'Engine', valueA: '2.5L 4-cyl Hybrid', valueB: '1.5T / 2.0T Hybrid', winner: 'tie' },
+      { label: 'Horsepower', valueA: '225 hp (combined)', valueB: '192 hp / 204 hp Hybrid', winner: 'a' },
+      { label: 'Fuel Economy', valueA: '52/53 mpg (city/hwy)', valueB: '48/48 mpg (Hybrid)', winner: 'a' },
+      { label: 'Transmission', valueA: 'eCVT', valueB: 'CVT / eCVT', winner: 'tie' },
+      { label: 'Cargo', valueA: '12.9 cu ft', valueB: '16.7 cu ft', winner: 'b' },
+      { label: 'Starting MSRP', valueA: '$28,700', valueB: '$28,000', winner: 'b' },
+      { label: 'AWD Available', valueA: 'Yes', valueB: 'No', winner: 'a' },
+      { label: 'Reliability Rating', valueA: '9.2/10', valueB: '8.7/10', winner: 'a' },
+    ],
+    prosA: ['Best-in-class fuel economy (52 mpg city)', 'Standard AWD option available', 'Legendary Toyota reliability', 'Smooth and comfortable ride', 'Strong resale value', 'Toyota Safety Sense 3.0 standard'],
+    consA: ['Less engaging to drive', 'Smaller trunk space', 'Conservative styling', 'Slower acceleration feel'],
+    prosB: ['More engaging driving dynamics', 'Larger trunk (16.7 cu ft)', 'More modern interior design', 'Available 2.0T for more power', 'Lower starting price', 'Wireless CarPlay/Android Auto standard'],
+    consB: ['No AWD option', 'Slightly lower fuel economy', 'CVT can feel less responsive', 'Tight rear headroom in some trims'],
+    verdict: {
+      winner: 'tie',
+      summary: 'The Camry wins on efficiency, reliability, and AWD availability. The Accord offers better driving engagement, a larger trunk, and a more modern interior at a lower price.',
+      recommendation: 'Choose the Camry if you prioritize fuel economy, all-weather capability, and long-term reliability. Choose the Accord if you value driving engagement and interior quality.',
+    },
+    faqs: [
+      { question: 'Which has better fuel economy?', answer: 'The Toyota Camry hybrid achieves 52/53 mpg city/highway, beating the Honda Accord hybrid\'s 48/48 mpg. Both are excellent for a midsize sedan.' },
+      { question: 'Does the Accord offer AWD?', answer: 'No, the 2025 Honda Accord is front-wheel drive only. If AWD is important to you, the Camry is the clear choice.' },
+      { question: 'Which has a better warranty?', answer: 'Both offer similar coverage: 3-year/36,000-mile basic and 5-year/60,000-mile powertrain. Honda includes 5-year/60,000-mile roadside assistance.' },
+    ],
+    related: [
+      { slug: 'tesla-model-3-vs-bmw-i4', title: 'Tesla Model 3 vs BMW i4' },
+      { slug: 'japan-vs-thailand-travel', title: 'Japan vs Thailand Travel' },
+      { slug: 'iphone-16-pro-vs-samsung-galaxy-s25', title: 'iPhone 16 Pro vs Samsung Galaxy S25' },
+    ],
+  },
+  'japan-vs-thailand-travel': {
+    slug: 'japan-vs-thailand-travel',
+    title: 'Japan vs Thailand: Which Destination Should You Visit?',
+    category: 'Travel',
+    entityA: { name: 'Japan', tagline: 'Ancient tradition meets futuristic innovation', image: '🗾', color: 'red', score: 9.3 },
+    entityB: { name: 'Thailand', tagline: 'Tropical paradise with rich culture', image: '🏖️', color: 'orange', score: 9.0 },
+    specs: [
+      { label: 'Best Time to Visit', valueA: 'Spring (Mar-May), Fall (Sep-Nov)', valueB: 'Nov-Feb (cool season)', winner: 'tie' },
+      { label: 'Budget (per day)', valueA: '$100-200 (mid-range)', valueB: '$40-80 (mid-range)', winner: 'b' },
+      { label: 'Language Barrier', valueA: 'Moderate (limited English)', valueB: 'Low (tourist-friendly)', winner: 'b' },
+      { label: 'Food Scene', valueA: 'Sushi, ramen, kaiseki (Michelin star capital)', valueB: 'Street food, Thai cuisine, seafood', winner: 'tie' },
+      { label: 'Public Transit', valueA: 'World-class (Shinkansen, metro)', valueB: 'Good (BTS, MRT, tuk-tuks)', winner: 'a' },
+      { label: 'Cultural Sites', valueA: 'Temples, castles, shrines, gardens', valueB: 'Temples, palaces, floating markets', winner: 'tie' },
+      { label: 'Beaches', valueA: 'Okinawa, lesser-known islands', valueB: 'Phuket, Krabi, Koh Samui (world-class)', winner: 'b' },
+      { label: 'Safety', valueA: 'Very high (safest country)', valueB: 'High (tourist areas very safe)', winner: 'a' },
+      { label: 'Visa (US citizens)', valueA: '90-day visa-free', valueB: '30-day visa-free', winner: 'a' },
+    ],
+    prosA: ['Incredibly safe and clean', 'Unmatched public transportation', 'Unique cultural experiences year-round', 'World-class cuisine scene', 'Excellent infrastructure', 'Unique blend of ancient and modern', 'Cherry blossom season is iconic'],
+    consA: ['Higher cost of accommodation and dining', 'Language barrier outside major cities', 'Crowded in peak seasons', 'More complex to navigate for first-timers'],
+    prosB: ['Much more affordable overall', 'Stunning tropical beaches', 'Warm weather year-round', 'Extremely tourist-friendly', 'Famous street food culture', 'Easy visa access', 'Rich Buddhist cultural heritage'],
+    consB: ['Hot and humid climate', 'Monsoon season (May-Oct)', 'Less efficient public transit', 'Can feel overly touristy in peak areas', 'Air quality issues in some cities'],
+    verdict: {
+      winner: 'tie',
+      summary: 'Japan offers a unique, pristine cultural experience with unmatched infrastructure. Thailand provides tropical beauty, incredible food, and unbeatable value for budget travelers.',
+      recommendation: 'Choose Japan for culture, safety, cleanliness, and unique experiences. Choose Thailand for beaches, food, budget-friendliness, and tropical relaxation.',
+    },
+    faqs: [
+      { question: 'Which is better for first-time international travelers?', answer: 'Thailand is generally easier for first-timers due to lower costs, English accessibility, and well-established tourist infrastructure. Japan requires more planning but is extremely rewarding.' },
+      { question: 'How many days do I need for each?', answer: 'For Japan, 10-14 days minimum to see Tokyo, Kyoto, and Osaka. For Thailand, 7-10 days covers Bangkok, Chiang Mai, and a beach destination.' },
+      { question: 'Which is better for families?', answer: 'Both are great for families. Japan offers safety, cleanliness, and educational value. Thailand is more budget-friendly and has kid-friendly beaches and resorts.' },
+      { question: 'Can I combine both in one trip?', answer: 'Yes! Many travelers fly into Bangkok, explore Thailand, then take a budget flight to Japan (often 5-6 hours). This works well for a 3-4 week trip.' },
+    ],
+    related: [
+      { slug: 'toyota-camry-vs-honda-accord', title: 'Toyota Camry vs Honda Accord' },
+      { slug: 'netflix-vs-disney-plus', title: 'Netflix vs Disney+' },
+      { slug: 'iphone-16-pro-vs-samsung-galaxy-s25', title: 'iPhone 16 Pro vs Samsung Galaxy S25' },
+    ],
+  },
+  'netflix-vs-disney-plus': {
+    slug: 'netflix-vs-disney-plus',
+    title: 'Netflix vs Disney+: Best Streaming Service in 2025?',
+    category: 'Entertainment',
+    entityA: { name: 'Netflix', tagline: 'The streaming giant with unmatched variety', image: '🎬', color: 'red', score: 8.7 },
+    entityB: { name: 'Disney+', tagline: 'Home of Disney, Marvel, Star Wars & more', image: '✨', color: 'blue', score: 8.4 },
+    specs: [
+      { label: 'Monthly Price', valueA: '$7.99 (std w/ ads) to $24.94 (premium)', valueB: '$9.99 (std w/ ads) to $15.99 (premium)', winner: 'b' },
+      { label: 'Content Library', valueA: '6,000+ titles', valueB: '1,500+ titles', winner: 'a' },
+      { label: 'Original Content', valueA: 'Stranger Things, Squid Game, The Crown', valueB: 'The Mandalorian, Loki, Ahsoka', winner: 'tie' },
+      { label: 'Simultaneous Streams', valueA: '1-4 (plan dependent)', valueB: '4 (all plans)', winner: 'b' },
+      { label: '4K Streaming', valueA: 'Premium plan ($24.94)', valueB: 'All plans included', winner: 'b' },
+      { label: 'Ads', valueA: 'Standard plan has ads', valueB: 'Standard plan has ads', winner: 'tie' },
+      { label: 'Offline Downloads', valueA: 'Yes (most titles)', valueB: 'Yes (all titles)', winner: 'b' },
+      { label: 'Kids Content', valueA: 'Decent kids library', valueB: 'Extensive (Disney, Pixar, Nickelodeon)', winner: 'b' },
+    ],
+    prosA: ['Largest content library', 'Most original programming', 'Strong international content', 'No-frills movie selection', 'Mature content available', 'Frequent new releases'],
+    consA: ['Premium 4K is expensive', 'Content rotates frequently', 'Many shows cancelled after 1-2 seasons', 'Increasing ad load on lower tiers'],
+    prosB: ['Beloved franchises (Marvel, Star Wars, Pixar)', '4K included in all plans', 'Excellent for families', 'Strong kids content library', 'More affordable 4K option', 'Classic Disney catalog'],
+    consB: ['Smaller overall library', 'Fewer mature/adult titles', 'Less international content', 'Some releases delayed from theatrical'],
+    verdict: {
+      winner: 'tie',
+      summary: 'Netflix wins on sheer volume and variety of content, especially for adults. Disney+ is the clear choice for families and fans of Disney-owned franchises, with better 4K value.',
+      recommendation: 'Choose Netflix for variety, mature content, and international shows. Choose Disney+ for families, Marvel/Star Wars fans, and the best 4K value.',
+    },
+    faqs: [
+      { question: 'Which is better for families with kids?', answer: 'Disney+ is the winner for families, with extensive kids content from Disney, Pixar, Marvel, and Nickelodeon. All content is family-appropriate.' },
+      { question: 'Can I bundle Disney+ with other services?', answer: 'Yes! The Disney Bundle includes Disney+, Hulu, and ESPN+ for $16.99/month (with ads) or $26.99/month (no ads). This offers excellent value.' },
+      { question: 'Which has more original content?', answer: 'Netflix produces significantly more original content across all genres. Disney+ focuses on franchise content (Marvel, Star Wars) with fewer but high-budget originals.' },
+      { question: 'Is Netflix worth the premium tier for 4K?', answer: 'At $24.94/month, Netflix Premium is the most expensive streaming tier. If 4K is important, Disney+ Premium at $15.99 or Apple TV+ at $9.99 offer better value.' },
+    ],
+    related: [
+      { slug: 'chatgpt-vs-claude-ai', title: 'ChatGPT vs Claude AI' },
+      { slug: 'japan-vs-thailand-travel', title: 'Japan vs Thailand Travel' },
+      { slug: 'macbook-pro-vs-dell-xps-15', title: 'MacBook Pro vs Dell XPS 15' },
+    ],
+  },
+  'tesla-model-3-vs-bmw-i4': {
+    slug: 'tesla-model-3-vs-bmw-i4',
+    title: 'Tesla Model 3 vs BMW i4: Best Electric Sedan?',
+    category: 'Cars',
+    entityA: { name: 'Tesla Model 3 (2025)', tagline: 'The EV that changed everything', image: '⚡', color: 'red', score: 9.0 },
+    entityB: { name: 'BMW i4', tagline: 'BMW performance meets electric efficiency', image: '🔋', color: 'blue', score: 8.7 },
+    specs: [
+      { label: 'Range (EPA)', valueA: '272-358 miles (trims vary)', valueB: '256-307 miles', winner: 'a' },
+      { label: '0-60 mph', valueA: '3.1s (Performance)', valueB: '3.4s (M50)', winner: 'a' },
+      { label: 'Base Price', valueA: '$38,990', valueB: '$52,200', winner: 'b' },
+      { label: 'Charging Speed', valueA: '250 kW (Supercharger)', valueB: '205 kW (CCS)', winner: 'a' },
+      { label: 'Charging Network', valueA: 'Tesla Supercharger (largest)', valueB: 'CCS network + Tesla access', winner: 'a' },
+      { label: 'Drive', valueA: 'RWD / AWD', valueB: 'RWD / AWD (M50)', winner: 'tie' },
+      { label: 'Interior', valueA: 'Minimalist, 15" screen', valueB: 'Traditional luxury, curved display', winner: 'b' },
+      { label: 'Cargo Space', valueA: '22.9 cu ft', valueB: '16.6 cu ft', winner: 'a' },
+      { label: 'Build Quality', valueA: 'Good, improved recently', valueB: 'Excellent (BMW standard)', winner: 'b' },
+    ],
+    prosA: ['Longest range in class', 'Fastest charging with Supercharger network', 'Lower starting price', 'Best software/OTA updates', 'Strong resale value', 'Largest EV charging network access'],
+    consA: ['Minimalist interior may feel sparse', 'No Apple CarPlay/Android Auto', 'Build quality inconsistencies', 'Polarizing styling'],
+    prosB: ['Superior BMW build quality and materials', 'More traditional luxury interior', 'Available M50 performance variant', 'Apple CarPlay & Android Auto standard', 'Better ride comfort', 'iDrive infotainment system'],
+    consB: ['Higher starting price', 'Shorter range', 'Slower charging speed', 'Smaller cargo space', 'Limited charging network vs Tesla'],
+    verdict: {
+      winner: 'a',
+      summary: 'The Tesla Model 3 offers superior range, charging infrastructure, and value. The BMW i4 counters with traditional luxury build quality and a more refined driving experience.',
+      recommendation: 'Choose Tesla Model 3 for maximum range, best charging network, and value. Choose BMW i4 if you prioritize luxury interior, build quality, and driving refinement.',
+    },
+    faqs: [
+      { question: 'Which has better range in real-world use?', answer: 'The Tesla Model 3 Long Range consistently achieves 320-340 miles in real-world mixed driving. The BMW i4 eDrive40 achieves 250-270 miles under similar conditions.' },
+      { question: 'Can the BMW i4 use Tesla Superchargers?', answer: 'Starting in 2025, BMW vehicles with CCS can use Tesla Superchargers with an adapter. Native NACS ports are coming to future BMW models.' },
+      { question: 'Which has lower maintenance costs?', answer: 'Both have lower maintenance costs than ICE vehicles. Tesla has fewer moving parts and no oil changes. BMW offers included maintenance for 3 years/36,000 miles.' },
+      { question: 'Is the Tesla Performance worth it?', answer: 'The Tesla Model 3 Performance at 0-60 in 3.1s is exhilarating, but the Long Range offers the best balance of range and performance for most buyers.' },
+    ],
+    related: [
+      { slug: 'toyota-camry-vs-honda-accord', title: 'Toyota Camry vs Honda Accord' },
+      { slug: 'iphone-16-pro-vs-samsung-galaxy-s25', title: 'iPhone 16 Pro vs Samsung Galaxy S25' },
+      { slug: 'bitcoin-vs-ethereum', title: 'Bitcoin vs Ethereum' },
+    ],
+  },
+};
+
+export function getStaticPaths() {
+  return Object.keys(comparisons).map((slug) => ({
+    params: { slug },
+    props: { data: comparisons[slug] },
+  }));
+}
+
+const { slug } = Astro.params;
+const data: ComparisonData = Astro.props.data;
+
+const winnerText = data.verdict.winner === 'a'
+  ? data.entityA.name
+  : data.verdict.winner === 'b'
+    ? data.entityB.name
+    : 'It\'s a Tie';
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ComparisonPage",
+  "name": data.title,
+  "description": data.verdict.summary,
+  "mainEntity": [
+    {
+      "@type": "Product",
+      "name": data.entityA.name,
+      "description": data.entityA.tagline,
+    },
+    {
+      "@type": "Product",
+      "name": data.entityB.name,
+      "description": data.entityB.tagline,
+    },
+  ],
+  "dateModified": new Date().toISOString(),
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE.url },
+    { "@type": "ListItem", "position": 2, "name": data.category, "item": `${SITE.url}/category/${data.category.toLowerCase().replace(/ & /g, '-')}` },
+    { "@type": "ListItem", "position": 3, "name": data.title, "item": `${SITE.url}/compare/${data.slug}` },
+  ],
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": data.faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer,
+    },
+  })),
+};
+---
+
+<BaseLayout title={`${data.title} | ${SITE.name}`} description={data.verdict.summary}>
+  <!-- Top Ad Banner -->
+  <div class="ad-placeholder h-24 w-full mb-0">
+    Ad Banner (728x90)
+  </div>
+
+  <!-- Breadcrumb -->
+  <nav class="bg-surface-50 border-b border-surface-200">
+    <div class="container-custom py-3">
+      <ol class="flex items-center gap-2 text-sm text-surface-500">
+        <li><a href="/" class="hover:text-primary-600 transition-colors">Home</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg></li>
+        <li><a href={`/category/${data.category.toLowerCase().replace(/ & /g, '-')}`} class="hover:text-primary-600 transition-colors">{data.category}</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg></li>
+        <li class="text-surface-700 font-medium truncate max-w-xs">{data.entityA.name} vs {data.entityB.name}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <article class="container-custom py-8 md:py-12">
+    <!-- Header -->
+    <header class="text-center mb-12">
+      <span class="badge-primary mb-4">{data.category}</span>
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">
+        {data.entityA.name} vs {data.entityB.name}
+      </h1>
+      <p class="text-lg text-surface-600 max-w-2xl mx-auto">
+        {data.title}
+      </p>
+    </header>
+
+    <!-- Entity Comparison Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <!-- Entity A -->
+      <div class="card-premium p-8 text-center border-t-4 border-t-primary-500">
+        <div class="text-6xl mb-4">{data.entityA.image}</div>
+        <h2 class="text-2xl font-bold mb-2">{data.entityA.name}</h2>
+        <p class="text-surface-600 mb-4">{data.entityA.tagline}</p>
+        <div class="inline-flex items-center gap-2">
+          <div class="flex">
+            {[1,2,3,4,5].map(i => (
+              <svg class={`w-5 h-5 ${i <= Math.round(data.entityA.score / 2) ? 'text-amber-400' : 'text-surface-200'}`} fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            ))}
+          </div>
+          <span class="font-bold text-lg">{data.entityA.score}/10</span>
+        </div>
+      </div>
+
+      <!-- Entity B -->
+      <div class="card-premium p-8 text-center border-t-4 border-t-accent-500">
+        <div class="text-6xl mb-4">{data.entityB.image}</div>
+        <h2 class="text-2xl font-bold mb-2">{data.entityB.name}</h2>
+        <p class="text-surface-600 mb-4">{data.entityB.tagline}</p>
+        <div class="inline-flex items-center gap-2">
+          <div class="flex">
+            {[1,2,3,4,5].map(i => (
+              <svg class={`w-5 h-5 ${i <= Math.round(data.entityB.score / 2) ? 'text-amber-400' : 'text-surface-200'}`} fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            ))}
+          </div>
+          <span class="font-bold text-lg">{data.entityB.score}/10</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VS Divider -->
+    <div class="flex items-center justify-center my-10">
+      <div class="h-px bg-surface-200 flex-1"></div>
+      <div class="mx-6 w-16 h-16 bg-gradient-to-br from-primary-500 to-accent-500 rounded-full flex items-center justify-center text-white font-extrabold text-xl shadow-lg">
+        VS
+      </div>
+      <div class="h-px bg-surface-200 flex-1"></div>
+    </div>
+
+    <!-- In-Content Ad -->
+    <div class="ad-placeholder h-24 w-full my-8">
+      In-Content Ad Banner (728x90)
+    </div>
+
+    <!-- Specs Comparison Table -->
+    <section class="mb-12">
+      <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">Detailed Comparison</h2>
+      <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-surface-50 border-b border-surface-200">
+                <th class="text-left py-4 px-6 font-semibold text-surface-700">Specification</th>
+                <th class="text-left py-4 px-6 font-semibold text-primary-700">{data.entityA.name}</th>
+                <th class="text-left py-4 px-6 font-semibold text-accent-700">{data.entityB.name}</th>
+                <th class="text-center py-4 px-4 font-semibold text-surface-700 w-20">Winner</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.specs.map((spec) => (
+                <tr class="border-b border-surface-100 last:border-0 hover:bg-surface-50 transition-colors">
+                  <td class="py-4 px-6 font-medium text-surface-700">{spec.label}</td>
+                  <td class="py-4 px-6 text-surface-600">{spec.valueA}</td>
+                  <td class="py-4 px-6 text-surface-600">{spec.valueB}</td>
+                  <td class="py-4 px-4 text-center">
+                    {spec.winner === 'a' && (
+                      <span class="badge-success">A</span>
+                    )}
+                    {spec.winner === 'b' && (
+                      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-accent-100 text-accent-700">B</span>
+                    )}
+                    {spec.winner === 'tie' && (
+                      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-surface-100 text-surface-600">Tie</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pros & Cons Section -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+      <!-- Entity A Pros & Cons -->
+      <div>
+        <h3 class="text-xl font-bold text-center mb-6 text-primary-700">{data.entityA.name}</h3>
+        <div class="card p-6 mb-4">
+          <h4 class="font-semibold text-emerald-700 mb-3 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            Pros
+          </h4>
+          <ul class="space-y-2">
+            {data.prosA.map(pro => (
+              <li class="flex items-start gap-2 text-surface-600">
+                <span class="text-emerald-500 mt-1 shrink-0">+</span>
+                <span>{pro}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="card p-6">
+          <h4 class="font-semibold text-red-700 mb-3 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            Cons
+          </h4>
+          <ul class="space-y-2">
+            {data.consA.map(con => (
+              <li class="flex items-start gap-2 text-surface-600">
+                <span class="text-red-500 mt-1 shrink-0">-</span>
+                <span>{con}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Entity B Pros & Cons -->
+      <div>
+        <h3 class="text-xl font-bold text-center mb-6 text-accent-700">{data.entityB.name}</h3>
+        <div class="card p-6 mb-4">
+          <h4 class="font-semibold text-emerald-700 mb-3 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            Pros
+          </h4>
+          <ul class="space-y-2">
+            {data.prosB.map(pro => (
+              <li class="flex items-start gap-2 text-surface-600">
+                <span class="text-emerald-500 mt-1 shrink-0">+</span>
+                <span>{pro}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="card p-6">
+          <h4 class="font-semibold text-red-700 mb-3 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            Cons
+          </h4>
+          <ul class="space-y-2">
+            {data.consB.map(con => (
+              <li class="flex items-start gap-2 text-surface-600">
+                <span class="text-red-500 mt-1 shrink-0">-</span>
+                <span>{con}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Verdict Card -->
+    <section class="mb-12">
+      <div class="card-premium p-8 md:p-10 bg-gradient-to-br from-primary-50 to-accent-50 border-primary-200">
+        <div class="text-center mb-6">
+          <div class="inline-flex items-center gap-2 bg-primary-600 text-white px-5 py-2 rounded-full text-sm font-bold mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+            </svg>
+            Expert Verdict
+          </div>
+          <h2 class="text-2xl md:text-3xl font-bold mb-2">
+            {data.verdict.winner === 'tie' ? 'The Verdict: It Depends on Your Needs' : `Winner: ${winnerText}`}
+          </h2>
+        </div>
+
+        <div class="max-w-3xl mx-auto">
+          <p class="text-surface-700 text-lg leading-relaxed mb-6 text-center">
+            {data.verdict.summary}
+          </p>
+          <div class="bg-white rounded-xl p-6 border border-primary-100">
+            <h3 class="font-bold text-primary-800 mb-2 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Our Recommendation
+            </h3>
+            <p class="text-surface-600 leading-relaxed">
+              {data.verdict.recommendation}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="mb-12">
+      <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+      <div class="space-y-4 max-w-3xl mx-auto">
+        {data.faqs.map((faq, index) => (
+          <details class="card p-6 group">
+            <summary class="flex items-center justify-between cursor-pointer font-semibold text-surface-800 hover:text-primary-600 transition-colors list-none">
+              <span>{faq.question}</span>
+              <svg class="w-5 h-5 text-surface-400 group-open:rotate-180 transition-transform shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <p class="mt-4 text-surface-600 leading-relaxed">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Bottom Ad -->
+    <div class="ad-placeholder h-24 w-full my-8">
+      Bottom Ad Banner (728x90)
+    </div>
+
+    <!-- Related Comparisons -->
+    <section>
+      <h2 class="text-2xl font-bold text-center mb-8">Related Comparisons</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {data.related.map((rel) => (
+          <a href={`/compare/${rel.slug}`} class="card p-6 group hover:-translate-y-1 transition-all">
+            <h3 class="font-bold text-surface-900 group-hover:text-primary-600 transition-colors mb-2">
+              {rel.title}
+            </h3>
+            <div class="flex items-center text-primary-600 text-sm font-medium">
+              Read comparison
+              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  </article>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+</BaseLayout>

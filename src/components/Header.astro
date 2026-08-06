@@ -1,0 +1,118 @@
+---
+import { SITE, NAV_LINKS } from '../lib/constants';
+---
+
+<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-surface-100">
+  <nav class="container-custom">
+    <div class="flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 group">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
+          <span class="text-white font-bold text-sm">VS</span>
+        </div>
+        <span class="font-display font-bold text-xl text-surface-900 group-hover:text-primary-600 transition-colors">
+          {SITE.name}
+        </span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-8">
+        {NAV_LINKS.map(link => (
+          <a
+            href={link.href}
+            class="text-sm font-medium text-surface-600 hover:text-primary-600 transition-colors"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+
+      <!-- Search + CTA -->
+      <div class="hidden md:flex items-center gap-4">
+        <button
+          class="p-2 rounded-lg text-surface-500 hover:text-primary-600 hover:bg-primary-50 transition-colors"
+          aria-label="Search"
+          onclick="document.getElementById('search-modal')?.classList.toggle('hidden')"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+        <a href="/categories" class="btn-primary text-sm py-2 px-4">
+          Compare Now
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden p-2 rounded-lg text-surface-600 hover:bg-surface-100"
+        aria-label="Menu"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden pb-4">
+      <div class="flex flex-col gap-2">
+        {NAV_LINKS.map(link => (
+          <a
+            href={link.href}
+            class="px-4 py-3 rounded-xl text-surface-700 hover:bg-surface-50 font-medium"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Search Modal -->
+<div id="search-modal" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-start justify-center pt-24">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 p-6">
+    <div class="flex items-center gap-4">
+      <svg class="w-5 h-5 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Compare anything... e.g. iPhone vs Samsung"
+        class="flex-1 text-lg outline-none placeholder:text-surface-400"
+        autofocus
+      />
+      <button onclick="document.getElementById('search-modal')?.classList.add('hidden')" class="text-surface-400 hover:text-surface-600">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+  });
+
+  // Search functionality
+  const searchInput = document.getElementById('search-input');
+  searchInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const query = searchInput.value.trim().toLowerCase();
+      if (query.includes(' vs ')) {
+        const slug = query.replace(/\s+vs\s+/g, '-vs-');
+        window.location.href = `/compare/${slug}`;
+      } else {
+        window.location.href = `/search?q=${encodeURIComponent(query)}`;
+      }
+    }
+  });
+</script>

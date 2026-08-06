@@ -1,0 +1,398 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, CATEGORIES } from '../lib/constants';
+
+const popularComparisons = [
+  { slug: 'iphone-16-pro-vs-samsung-galaxy-s25', title: 'iPhone 16 Pro vs Samsung Galaxy S25', category: 'Technology' },
+  { slug: 'macbook-pro-vs-dell-xps-15', title: 'MacBook Pro vs Dell XPS 15', category: 'Technology' },
+  { slug: 'chatgpt-vs-claude-ai', title: 'ChatGPT vs Claude AI', category: 'AI Models' },
+  { slug: 'bitcoin-vs-ethereum', title: 'Bitcoin vs Ethereum', category: 'Cryptocurrency' },
+  { slug: 'toyota-camry-vs-honda-accord', title: 'Toyota Camry vs Honda Accord', category: 'Cars' },
+  { slug: 'japan-vs-thailand-travel', title: 'Japan vs Thailand Travel', category: 'Travel' },
+  { slug: 'netflix-vs-disney-plus', title: 'Netflix vs Disney+', category: 'Entertainment' },
+  { slug: 'tesla-model-3-vs-bmw-i4', title: 'Tesla Model 3 vs BMW i4', category: 'Cars' },
+];
+
+const latestPosts = [
+  { slug: 'best-smartphones-2025', title: 'Best Smartphones of 2025: Comprehensive Comparison', date: '2025-01-15', readTime: '12 min read', category: 'Technology' },
+  { slug: 'ev-buying-guide', title: 'Electric Vehicle Buying Guide: What to Look For', date: '2025-01-10', readTime: '8 min read', category: 'Cars' },
+  { slug: 'streaming-services-compared', title: 'All Streaming Services Compared: Find Your Perfect Match', date: '2025-01-05', readTime: '10 min read', category: 'Entertainment' },
+];
+---
+
+<BaseLayout
+  title={`${SITE.name} - Compare Anything. Choose Confidently.`}
+  description="Compare anything side-by-side with expert analysis, detailed specs, and honest verdicts. Make informed decisions with ChooseVS — 100% free, unbiased comparisons across 7 categories."
+>
+  <!-- Top Banner Ad Placeholder -->
+  <div class="ad-placeholder h-24 w-full mb-4">
+    Ad Banner (728x90)
+  </div>
+
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-accent-50">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.08),transparent_50%)]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(168,85,247,0.06),transparent_50%)]"></div>
+
+    <div class="container-custom relative section-padding">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="inline-flex items-center gap-2 bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-medium mb-8">
+          <span class="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></span>
+          Trusted by 50,000+ monthly readers
+        </div>
+
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6">
+          Compare Anything.<br />
+          <span class="gradient-text">Choose Confidently.</span>
+        </h1>
+
+        <p class="text-xl md:text-2xl text-surface-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+          Expert side-by-side comparisons with detailed specs, honest analysis, and clear verdicts. Make informed decisions without the guesswork.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="max-w-2xl mx-auto mb-8">
+          <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+              <svg class="w-6 h-6 text-surface-400 group-focus-within:text-primary-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              id="hero-search"
+              placeholder="Compare anything... e.g. iPhone vs Samsung"
+              class="w-full pl-14 pr-32 py-5 bg-white border-2 border-surface-200 rounded-2xl text-lg placeholder:text-surface-400 focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all shadow-sm hover:shadow-md"
+            />
+            <button
+              onclick="handleHeroSearch()"
+              class="absolute right-2 top-1/2 -translate-y-1/2 btn-primary py-3 px-6"
+            >
+              Compare
+            </button>
+          </div>
+          <p class="text-sm text-surface-500 mt-3">
+            Popular: <a href="/compare/iphone-16-pro-vs-samsung-galaxy-s25" class="text-primary-600 hover:underline">iPhone 16 Pro vs Samsung</a>,
+            <a href="/compare/chatgpt-vs-claude-ai" class="text-primary-600 hover:underline">ChatGPT vs Claude</a>
+          </p>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a href="#categories" class="btn-primary text-lg px-8 py-4">
+            Browse Categories
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+          <a href="#how-it-works" class="btn-secondary text-lg px-8 py-4">
+            How It Works
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trusted Stats Section -->
+  <section class="bg-surface-900 py-12">
+    <div class="container-custom">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="text-3xl md:text-4xl font-extrabold text-white mb-1">50K+</div>
+          <div class="text-surface-400 text-sm font-medium">Comparisons Made</div>
+        </div>
+        <div>
+          <div class="text-3xl md:text-4xl font-extrabold text-white mb-1">7</div>
+          <div class="text-surface-400 text-sm font-medium">Categories</div>
+        </div>
+        <div>
+          <div class="text-3xl md:text-4xl font-extrabold text-white mb-1">100%</div>
+          <div class="text-surface-400 text-sm font-medium">Free to Use</div>
+        </div>
+        <div>
+          <div class="text-3xl md:text-4xl font-extrabold text-white mb-1">200+</div>
+          <div class="text-surface-400 text-sm font-medium">Expert Reviews</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Categories -->
+  <section id="categories" class="section-padding bg-white">
+    <div class="container-custom">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Browse by Category</h2>
+        <p class="text-surface-600 text-lg max-w-2xl mx-auto">
+          Explore our comprehensive comparison categories, from cutting-edge tech to travel destinations.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {CATEGORIES.map((category) => (
+          <a href={`/category/${category.slug}`} class="card p-6 group hover:border-primary-200 transition-all hover:-translate-y-1">
+            <div class="text-4xl mb-4">{category.icon}</div>
+            <h3 class="font-bold text-lg text-surface-900 group-hover:text-primary-600 transition-colors mb-2">
+              {category.name}
+            </h3>
+            <p class="text-surface-500 text-sm leading-relaxed">
+              {category.description}
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="section-padding bg-surface-50">
+    <div class="container-custom">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
+        <p class="text-surface-600 text-lg max-w-2xl mx-auto">
+          Get to the right answer in three simple steps.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+        <div class="text-center relative">
+          <div class="w-20 h-20 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <div class="absolute top-10 left-[calc(50%+40px)] w-[calc(100%-80px)] h-0.5 bg-primary-200 hidden md:block" style="width: calc(100% - 80px);"></div>
+          <span class="inline-block bg-primary-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">STEP 1</span>
+          <h3 class="text-xl font-bold mb-3">Search</h3>
+          <p class="text-surface-600 leading-relaxed">
+            Enter what you want to compare — products, services, destinations, or anything else.
+          </p>
+        </div>
+
+        <div class="text-center relative">
+          <div class="w-20 h-20 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <span class="inline-block bg-primary-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">STEP 2</span>
+          <h3 class="text-xl font-bold mb-3">Compare</h3>
+          <p class="text-surface-600 leading-relaxed">
+            View detailed side-by-side specs, pros & cons, and expert analysis for both options.
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-20 h-20 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <span class="inline-block bg-primary-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">STEP 3</span>
+          <h3 class="text-xl font-bold mb-3">Choose</h3>
+          <p class="text-surface-600 leading-relaxed">
+            Make your confident decision based on our clear verdict and detailed comparison data.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- In-Content Ad Placeholder -->
+  <div class="container-custom py-6">
+    <div class="ad-placeholder h-24 w-full">
+      Ad Banner (728x90)
+    </div>
+  </div>
+
+  <!-- Popular Comparisons Section -->
+  <section class="section-padding bg-white">
+    <div class="container-custom">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-bold mb-3">Popular Comparisons</h2>
+          <p class="text-surface-600 text-lg">The most-viewed comparisons by our community.</p>
+        </div>
+        <a href="/categories" class="hidden md:inline-flex items-center text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+          View All
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {popularComparisons.map((comp) => (
+          <a href={`/compare/${comp.slug}`} class="card-premium p-6 group hover:-translate-y-1 transition-all">
+            <span class="badge-primary mb-4">{comp.category}</span>
+            <h3 class="font-bold text-surface-900 group-hover:text-primary-600 transition-colors leading-snug mb-3">
+              {comp.title}
+            </h3>
+            <div class="flex items-center text-primary-600 text-sm font-medium">
+              Read comparison
+              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="mt-8 text-center md:hidden">
+        <a href="/categories" class="btn-secondary">View All Comparisons</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why ChooseVS Section -->
+  <section class="section-padding bg-surface-50">
+    <div class="container-custom">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Why Choose ChooseVS?</h2>
+        <p class="text-surface-600 text-lg max-w-2xl mx-auto">
+          We're committed to helping you make the best decision possible, every time.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="card p-8 text-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold mb-3">100% Unbiased</h3>
+          <p class="text-surface-600 text-sm leading-relaxed">
+            No sponsored rankings. Our comparisons are based purely on data, specs, and expert analysis.
+          </p>
+        </div>
+
+        <div class="card p-8 text-center">
+          <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold mb-3">Detailed Specs</h3>
+          <p class="text-surface-600 text-sm leading-relaxed">
+            Every comparison includes comprehensive specifications, performance data, and real-world testing results.
+          </p>
+        </div>
+
+        <div class="card p-8 text-center">
+          <div class="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold mb-3">Completely Free</h3>
+          <p class="text-surface-600 text-sm leading-relaxed">
+            All comparisons are free. No paywalls, no premium tiers — just honest information accessible to everyone.
+          </p>
+        </div>
+
+        <div class="card p-8 text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold mb-3">Fast & Clear</h3>
+          <p class="text-surface-600 text-sm leading-relaxed">
+            Get the verdict in seconds. Our side-by-side format makes it easy to spot differences and decide fast.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sidebar Ad Placeholder -->
+  <div class="container-custom py-6">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div class="lg:col-span-3"></div>
+      <div class="ad-placeholder h-64 w-full">
+        Sidebar Ad (300x250)
+      </div>
+    </div>
+  </div>
+
+  <!-- Latest Blog Posts Section -->
+  <section class="section-padding bg-white">
+    <div class="container-custom">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-bold mb-3">Latest from Our Blog</h2>
+          <p class="text-surface-600 text-lg">Expert guides and in-depth analysis.</p>
+        </div>
+        <a href="/blog" class="hidden md:inline-flex items-center text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+          All Posts
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {latestPosts.map((post) => (
+          <a href={`/blog/${post.slug}`} class="card overflow-hidden group hover:-translate-y-1 transition-all">
+            <div class="h-48 bg-gradient-to-br from-primary-100 to-accent-100 flex items-center justify-center">
+              <svg class="w-16 h-16 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              </svg>
+            </div>
+            <div class="p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="badge-primary">{post.category}</span>
+                <span class="text-surface-400 text-xs">{post.readTime}</span>
+              </div>
+              <h3 class="font-bold text-lg text-surface-900 group-hover:text-primary-600 transition-colors leading-snug mb-2">
+                {post.title}
+              </h3>
+              <time class="text-surface-500 text-sm">{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</time>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section class="section-padding bg-gradient-to-br from-primary-600 to-accent-600 relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]"></div>
+    <div class="container-custom relative text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+        Ready to Make Your Best Decision?
+      </h2>
+      <p class="text-primary-100 text-lg max-w-2xl mx-auto mb-10">
+        Join thousands of readers who trust ChooseVS for unbiased, detailed comparisons. Start exploring now.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a href="#categories" class="inline-flex items-center justify-center px-8 py-4 bg-white text-primary-700 font-bold rounded-xl hover:bg-primary-50 transition-colors shadow-lg text-lg">
+          Explore Comparisons
+          <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+        <a href="/blog" class="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-xl hover:bg-white/10 transition-colors text-lg">
+          Read Our Blog
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function handleHeroSearch() {
+      const input = document.getElementById('hero-search') as HTMLInputElement;
+      const query = input.value.trim().toLowerCase();
+      if (query.includes(' vs ')) {
+        const slug = query.replace(/\s+vs\s+/g, '-vs-');
+        window.location.href = `/compare/${slug}`;
+      } else if (query) {
+        window.location.href = `/search?q=${encodeURIComponent(query)}`;
+      }
+    }
+
+    document.getElementById('hero-search')?.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter') handleHeroSearch();
+    });
+  </script>
+</BaseLayout>

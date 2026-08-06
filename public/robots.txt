@@ -1,0 +1,8 @@
+# https://choosevs.com/robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://choosevs.com/sitemap-index.xml

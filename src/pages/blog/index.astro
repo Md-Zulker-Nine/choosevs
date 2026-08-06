@@ -1,0 +1,146 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CATEGORIES } from '../../lib/constants';
+
+const BLOG_POSTS = [
+  {
+    title: 'How to Choose the Right Smartphone in 2026',
+    excerpt: 'With over 50 flagship models released this year, picking the right smartphone has never been harder. This guide breaks down the key factors to consider.',
+    slug: 'how-to-choose-the-right-smartphone-in-2026',
+    date: '2026-07-15',
+    category: 'tech',
+    readTime: '12 min read',
+    featured: true,
+  },
+  {
+    title: 'Top 10 Laptop Comparisons That Actually Matter in 2026',
+    excerpt: 'Not all laptop comparisons are useful. We identified the 10 matchups that will actually help you decide your next purchase.',
+    slug: 'top-10-laptop-comparisons-that-actually-matter',
+    date: '2026-07-22',
+    category: 'tech',
+    readTime: '15 min read',
+    featured: true,
+  },
+  {
+    title: 'Cryptocurrency Comparison: What to Look For',
+    excerpt: 'Understanding tokenomics, consensus mechanisms, and real-world utility separates smart crypto investments from gambling. Here is what matters.',
+    slug: 'cryptocurrency-comparison-what-to-look-for',
+    date: '2026-07-28',
+    category: 'crypto',
+    readTime: '10 min read',
+    featured: false,
+  },
+  {
+    title: 'Travel Destination Comparison: Europe vs Asia',
+    excerpt: 'Planning a long-term trip or relocation? We compare cost of living, safety, culture, and quality of life between Europe and Asia.',
+    slug: 'travel-destination-comparison-europe-vs-asia',
+    date: '2026-08-02',
+    category: 'travel',
+    readTime: '14 min read',
+    featured: false,
+  },
+  {
+    title: 'Electric vs Gas Cars: The Complete Comparison',
+    excerpt: 'The EV revolution is in full swing, but gas cars still hold advantages in certain scenarios. We break down total cost of ownership, range, and more.',
+    slug: 'electric-vs-gas-cars-complete-comparison',
+    date: '2026-08-05',
+    category: 'cars',
+    readTime: '18 min read',
+    featured: true,
+  },
+  {
+    title: 'Understanding AI Model Comparisons: GPT vs Claude vs Gemini',
+    excerpt: 'With new AI models launching monthly, understanding benchmarks, pricing, and real-world performance is crucial. Here is how the top models compare.',
+    slug: 'understanding-ai-model-comparisons-gpt-vs-claude-vs-gemini',
+    date: '2026-08-07',
+    category: 'ai-models',
+    readTime: '11 min read',
+    featured: false,
+  },
+];
+
+function getCategory(slug: string) {
+  return CATEGORIES.find(c => c.slug === slug);
+}
+---
+
+<BaseLayout
+  title="Blog - ChooseVS"
+  description="Expert guides and in-depth analysis on making better comparisons across technology, travel, finance, and more."
+>
+  <section class="section-padding">
+    <div class="container-custom">
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-surface-900 mb-4">
+          The ChooseVS <span class="gradient-text">Blog</span>
+        </h1>
+        <p class="text-lg text-surface-600">
+          Expert guides, comparison methodologies, and deep dives to help you make better decisions.
+        </p>
+      </div>
+
+      <!-- Featured Posts -->
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold text-surface-900 mb-6">Featured Articles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {BLOG_POSTS.filter(p => p.featured).map((post) => {
+            const cat = getCategory(post.category);
+            return (
+              <a href={`/blog/${post.slug}`} class="card-premium p-8 group cursor-pointer">
+                <div class="flex items-center gap-3 mb-4">
+                  <span class="text-2xl">{cat?.icon}</span>
+                  <span class="badge-primary">{cat?.name}</span>
+                  <span class="text-xs text-surface-500">{post.date}</span>
+                </div>
+                <h3 class="text-xl font-bold text-surface-900 group-hover:text-primary-600 transition-colors mb-3">
+                  {post.title}
+                </h3>
+                <p class="text-surface-600 text-sm leading-relaxed mb-4">
+                  {post.excerpt}
+                </p>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-surface-500">{post.readTime}</span>
+                  <span class="inline-flex items-center text-sm font-semibold text-primary-600 group-hover:text-primary-700">
+                    Read Article
+                    <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- All Posts -->
+      <div>
+        <h2 class="text-2xl font-bold text-surface-900 mb-6">All Articles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {BLOG_POSTS.map((post) => {
+            const cat = getCategory(post.category);
+            return (
+              <a href={`/blog/${post.slug}`} class="card p-6 group cursor-pointer">
+                <div class="flex items-center gap-3 mb-3">
+                  <span class="text-lg">{cat?.icon}</span>
+                  <span class="badge-primary">{cat?.name}</span>
+                </div>
+                <h3 class="text-lg font-bold text-surface-900 group-hover:text-primary-600 transition-colors mb-2">
+                  {post.title}
+                </h3>
+                <p class="text-surface-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                  {post.excerpt}
+                </p>
+                <div class="flex items-center justify-between text-xs text-surface-500">
+                  <span>{post.date}</span>
+                  <span>{post.readTime}</span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

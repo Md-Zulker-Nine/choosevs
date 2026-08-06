@@ -1,0 +1,146 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CATEGORIES } from '../../lib/constants';
+
+const COMPARISONS = {
+  tech: [
+    { title: 'iPhone 16 Pro vs Samsung Galaxy S25 Ultra', winner: 'iPhone 16 Pro', excerpt: "Apple's A18 Pro chip takes the performance crown, but Galaxy S25 Ultra wins on zoom camera and S Pen functionality.", slug: 'iphone-16-pro-vs-samsung-galaxy-s25-ultra' },
+    { title: 'MacBook Pro M4 vs Dell XPS 16', winner: 'MacBook Pro M4', excerpt: 'Apple Silicon continues to dominate battery life and performance per watt, while Dell XPS 16 offers better display flexibility.', slug: 'macbook-pro-m4-vs-dell-xps-16' },
+    { title: 'Sony WH-1000XM6 vs Bose QuietComfort Ultra', winner: 'Tie', excerpt: 'Sony wins on ANC and app features; Bose wins on comfort and spatial audio. Your priorities decide the winner.', slug: 'sony-wh1000xm6-vs-bose-quietcomfort-ultra' },
+    { title: 'iPad Pro M4 vs Samsung Tab S10 Ultra', winner: 'iPad Pro M4', excerpt: 'M4 chip and OLED display make iPad Pro the creative powerhouse, while Tab S10 Ultra offers better multitasking and DeX mode.', slug: 'ipad-pro-m4-vs-samsung-tab-s10-ultra' },
+    { title: 'Apple Watch Ultra 3 vs Galaxy Watch 8', winner: 'Apple Watch Ultra 3', excerpt: 'Superior health sensors, longer battery, and watchOS ecosystem give Apple the edge for fitness enthusiasts.', slug: 'apple-watch-ultra-3-vs-galaxy-watch-8' },
+    { title: 'Nvidia RTX 5090 vs AMD Radeon RX 9900 XTX', winner: 'Nvidia RTX 5090', excerpt: 'DLSS 5 and ray tracing supremacy keep Nvidia on top, though AMD offers better raw value per dollar.', slug: 'rtx-5090-vs-rx-9900-xtx' },
+    { title: 'Google Pixel 9 Pro vs OnePlus 13', winner: 'Google Pixel 9 Pro', excerpt: 'Best-in-class computational photography vs faster charging and OxygenOS flexibility.', slug: 'google-pixel-9-pro-vs-oneplus-13' },
+    { title: 'PlayStation 5 Pro vs Xbox Series X Elite', winner: 'Tie', excerpt: 'PS5 Pro excels in exclusive titles and VR; Xbox Series X Elite offers Game Pass value and backward compatibility.', slug: 'ps5-pro-vs-xbox-series-x-elite' },
+  ],
+  movies: [
+    { title: 'Oppenheimer vs Barbie (Barbenheimer)', winner: 'Oppenheimer', excerpt: 'Both 2023 blockbusters delivered, but Oppenheimer\'s cinematic achievement and awards sweep edge out Barbie\'s cultural impact.', slug: 'oppenheimer-vs-barbie' },
+    { title: 'Marvel vs DC: Which Franchise Is Better in 2026?', winner: 'DC', excerpt: 'DC\'s rebooted universe under James Gunn has found critical acclaim, while Marvel struggles with franchise fatigue.', slug: 'marvel-vs-dc-2026' },
+    { title: 'Netflix vs Disney+: Best Streaming Service', winner: 'Netflix', excerpt: 'Netflix\'s original content volume and global library still lead, but Disney+ wins for families and franchise fans.', slug: 'netflix-vs-disney-plus' },
+    { title: 'The Godfather vs The Sopranos: Greatest Crime Story', winner: 'The Godfather', excerpt: 'While The Sopranos revolutionized television, The Godfather remains the pinnacle of cinematic storytelling.', slug: 'godfather-vs-sopranos' },
+    { title: 'Christopher Nolan vs Denis Villeneuve: Best Director', winner: 'Tie', excerpt: 'Nolan pushes practical effects boundaries while Villeneuve masters atmospheric sci-fi. Both are generational talents.', slug: 'nolan-vs-villeneuve' },
+    { title: 'Severance vs Slow Horses: Best Apple TV+ Show', winner: 'Severance', excerpt: 'Severance\'s mind-bending premise and production design set a new bar for prestige television storytelling.', slug: 'severance-vs-slow-horses' },
+    { title: 'Anatomy of a Fall vs Past Lives: Best Drama 2024', winner: 'Anatomy of a Fall', excerpt: 'Both are masterpieces of intimate storytelling, but Anatomy of a Fall\'s courtroom tension gives it the edge.', slug: 'anatomy-of-a-fall-vs-past-lives' },
+  ],
+  countries: [
+    { title: 'Japan vs South Korea: Best for Expats', winner: 'Japan', excerpt: 'Japan offers superior safety, infrastructure, and cultural depth; South Korea wins on internet speed and nightlife.', slug: 'japan-vs-south-korea-expats' },
+    { title: 'Portugal vs Spain: Best European Retirement', winner: 'Portugal', excerpt: 'Portugal\'s lower cost of living, favorable tax regime, and expat community make it the retirement winner.', slug: 'portugal-vs-spain-retirement' },
+    { title: 'Canada vs Australia: Best for Skilled Immigration', winner: 'Canada', excerpt: 'Canada\'s Express Entry system and path to citizenship are more straightforward than Australia\'s points system.', slug: 'canada-vs-australia-immigration' },
+    { title: 'Singapore vs Hong Kong: Best Asian Financial Hub', winner: 'Singapore', excerpt: 'Political stability, ease of doing business, and quality of life give Singapore the edge over Hong Kong in 2026.', slug: 'singapore-vs-hong-kong-financial-hub' },
+    { title: 'Switzerland vs Norway: Quality of Life Comparison', winner: 'Switzerland', excerpt: 'Both rank at the top globally, but Switzerland\'s central European location and multilingual culture offer more flexibility.', slug: 'switzerland-vs-norway-quality-of-life' },
+    { title: 'Mexico vs Colombia: Best Digital Nomad Destination', winner: 'Mexico', excerpt: 'Mexico\'s proximity to the US, established nomad hubs, and timezone alignment win over Colombia\'s lower costs.', slug: 'mexico-vs-colombia-digital-nomad' },
+    { title: 'Thailand vs Vietnam: Best for Long-Term Travel', winner: 'Thailand', excerpt: 'Thailand\'s infrastructure, healthcare quality, and established expat infrastructure make it the long-term winner.', slug: 'thailand-vs-vietnam-long-term-travel' },
+  ],
+  cars: [
+    { title: 'Tesla Model Y vs Ford Mustang Mach-E', winner: 'Tesla Model Y', excerpt: 'Tesla\'s Supercharger network and software experience still lead, but the Mach-E offers better build quality.', slug: 'tesla-model-y-vs-ford-mustang-mach-e' },
+    { title: 'BMW iX vs Mercedes EQS SUV', winner: 'BMW iX', excerpt: 'BMW\'s driving dynamics and more intuitive iDrive system beat Mercedes\'s hyperscreen hype.', slug: 'bmw-ix-vs-mercedes-eqs-suv' },
+    { title: 'Toyota Camry vs Honda Accord 2026', winner: 'Toyota Camry', excerpt: 'The fully hybrid Camry\'s fuel efficiency and reliability edge out the Accord\'s sportier handling.', slug: 'toyota-camry-vs-honda-accord-2026' },
+    { title: 'Porsche Taycan vs Tesla Model S Plaid', winner: 'Porsche Taycan', excerpt: 'Porsche\'s build quality, handling refinement, and interior luxury justify the premium over raw speed.', slug: 'porsche-taycan-vs-tesla-model-s-plaid' },
+    { title: 'Hyundai Ioniq 5 vs Kia EV6', winner: 'Hyundai Ioniq 5', excerpt: 'Same platform, but Ioniq 5\'s retro-futuristic design and slightly more spacious interior give it the edge.', slug: 'hyundai-ioniq-5-vs-kia-ev6' },
+    { title: 'Rivian R1S vs Rivian R1T: SUV or Truck?', winner: 'Rivian R1S', excerpt: 'For most families, the three-row R1S offers more versatility without sacrificing off-road capability.', slug: 'rivian-r1s-vs-r1t' },
+    { title: 'Mazda CX-50 vs Toyota RAV4 Hybrid', winner: 'Toyota RAV4 Hybrid', excerpt: 'Toyota\'s proven hybrid system and resale value win, though the CX-50 offers a more premium cabin.', slug: 'mazda-cx-50-vs-toyota-rav4-hybrid' },
+  ],
+  travel: [
+    { title: 'Bali vs Thailand Islands: Best Tropical Escape', winner: 'Thailand', excerpt: 'Thailand\'s island variety, infrastructure, and value make it the more versatile tropical destination.', slug: 'bali-vs-thailand-islands' },
+    { title: 'Paris vs Rome: Best European City Break', winner: 'Rome', excerpt: 'Rome\'s layered history, walkability, and culinary scene edge out Paris\'s museum density and romance.', slug: 'paris-vs-rome-city-break' },
+    { title: 'Maldives vs Seychelles: Best Luxury Beach Holiday', winner: 'Maldives', excerpt: 'The Maldives\' overwater villa concept and resort variety remain unmatched for pure beach luxury.', slug: 'maldives-vs-seychelles-luxury-beach' },
+    { title: 'Tokyo vs Seoul: Best Asian City Experience', winner: 'Tokyo', excerpt: 'Tokyo\'s sheer depth of experiences, food culture, and safe streets make it the ultimate Asian city.', slug: 'tokyo-vs-seoul-asian-city' },
+    { title: 'New Zealand vs Iceland: Best Adventure Destination', winner: 'New Zealand', excerpt: 'New Zealand\'s diversity, accessibility, and adventure infrastructure beat Iceland\'s otherworldly landscapes.', slug: 'new-zealand-vs-iceland-adventure' },
+    { title: 'Morocco vs Turkey: Best Cultural Immersion', winner: 'Turkey', excerpt: 'Turkey\'s combination of history, cuisine, value, and accessibility edges out Morocco\'s mystique.', slug: 'morocco-vs-turkey-cultural-immersion' },
+    { title: 'Caribbean Cruise vs Mediterranean Cruise: Best for 2026', winner: 'Mediterranean', excerpt: 'Mediterranean ports offer richer cultural experiences and better value for repeat cruisers.', slug: 'caribbean-vs-mediterranean-cruise' },
+  ],
+  crypto: [
+    { title: 'Bitcoin vs Ethereum: Best Long-Term Hold', winner: 'Bitcoin', excerpt: 'Bitcoin\'s digital gold narrative and ETF adoption make it the safer long-term store of value.', slug: 'bitcoin-vs-ethereum-long-term' },
+    { title: 'Solana vs Ethereum: Best Smart Contract Platform', winner: 'Ethereum', excerpt: 'Ethereum\'s security, developer ecosystem, and L2 scaling solution keep it ahead despite Solana\'s speed.', slug: 'solana-vs-ethereum-smart-contracts' },
+    { title: 'Monero vs Zcash: Best Privacy Coin', winner: 'Monero', excerpt: 'Monero\'s mandatory privacy and larger anonymity set make it the more reliable privacy option.', slug: 'monero-vs-zcash-privacy' },
+    { title: 'Cardano vs Polkadot: Best Third-Gen Blockchain', winner: 'Polkadot', excerpt: 'Polkadot\'s parachain ecosystem and interoperability approach show more real-world adoption than Cardano.', slug: 'cardano-vs-polkadot-third-gen' },
+    { title: 'Chainlink vs Pyth: Best Oracle Network', winner: 'Chainlink', excerpt: 'Chainlink\'s CCIP and established DeFi integrations give it a significant first-mover advantage.', slug: 'chainlink-vs-pyth-oracle' },
+    { title: 'USDC vs USDT: Best Stablecoin', winner: 'USDC', excerpt: 'USDC\'s regulatory compliance and transparency make it the safer choice despite USDT\'s larger market cap.', slug: 'usdc-vs-usdt-stablecoin' },
+    { title: 'Render vs Akash: Best DePIN Project', winner: 'Render', excerpt: 'Render\'s GPU rendering marketplace has clearer product-market fit and growing demand from AI workloads.', slug: 'render-vs-akash-depin' },
+  ],
+  'ai-models': [
+    { title: 'GPT-5 vs Claude 4 Opus: Best AI Model 2026', winner: 'Tie', excerpt: 'GPT-5 excels at code and reasoning; Claude 4 leads in nuanced writing and safety. Your use case decides.', slug: 'gpt-5-vs-claude-4-opus' },
+    { title: 'Gemini 3 Pro vs GPT-5: Best for Multimodal Tasks', winner: 'Gemini 3 Pro', excerpt: 'Google\'s native multimodal architecture handles video, images, and text more cohesively than competitors.', slug: 'gemini-3-pro-vs-gpt-5-multimodal' },
+    { title: 'Llama 4 vs Mistral Large 3: Best Open-Source Model', winner: 'Llama 4', excerpt: 'Meta\'s Llama 4 offers the best performance-to-cost ratio for self-hosted deployments and fine-tuning.', slug: 'llama-4-vs-mistral-large-3' },
+    { title: 'Claude 4 Opus vs Gemini 3 Pro: Best for Research', winner: 'Claude 4 Opus', excerpt: 'Claude\'s extended context window, citation accuracy, and nuanced analysis make it ideal for deep research.', slug: 'claude-4-opus-vs-gemini-3-pro-research' },
+    { title: 'GPT-5 vs Grok 4: Best for Code Generation', winner: 'GPT-5', excerpt: 'GPT-5\'s code generation, debugging, and multi-file refactoring capabilities remain the industry standard.', slug: 'gpt-5-vs-grok-4-code' },
+    { title: 'Claude 4 Sonnet vs GPT-5 Mini: Best Value AI', winner: 'Claude 4 Sonnet', excerpt: 'Claude 4 Sonnet delivers near-Opus quality at a fraction of the cost, making it the best value proposition.', slug: 'claude-4-sonnet-vs-gpt-5-mini-value' },
+    { title: 'Qwen 3 vs DeepSeek V4: Best for Non-English Languages', winner: 'Qwen 3', excerpt: 'Alibaba\'s Qwen 3 demonstrates superior performance across Chinese, Arabic, and Southeast Asian languages.', slug: 'qwen-3-vs-deepseek-v4' },
+  ],
+};
+
+export function getStaticPaths() {
+  return CATEGORIES.map((category) => ({
+    params: { slug: category.slug },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+
+const comparisons = COMPARISONS[category.id] || [];
+---
+
+<BaseLayout
+  title={`${category.name} Comparisons - ChooseVS`}
+  description={`Compare the best ${category.name.toLowerCase()} side-by-side. Expert analysis, detailed specs, and honest verdicts.`}
+>
+  <section class="section-padding">
+    <div class="container-custom">
+      <!-- Category Header -->
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <div class="text-5xl mb-4">{category.icon}</div>
+        <h1 class="text-4xl md:text-5xl font-bold text-surface-900 mb-4">
+          {category.name}
+        </h1>
+        <p class="text-lg text-surface-600">
+          {category.description}. Explore our detailed comparisons below to make the best choice.
+        </p>
+      </div>
+
+      <!-- Comparisons Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        {comparisons.map((comparison) => (
+          <a
+            href={`/compare/${comparison.slug}`}
+            class="card p-6 group cursor-pointer"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <span class="badge-primary">Comparison</span>
+              {comparison.winner !== 'Tie' && (
+                <span class="badge-success">Winner: {comparison.winner}</span>
+              )}
+              {comparison.winner === 'Tie' && (
+                <span class="badge-warning">It's a Tie</span>
+              )}
+            </div>
+            <h2 class="text-lg font-bold text-surface-900 group-hover:text-primary-600 transition-colors mb-2">
+              {comparison.title}
+            </h2>
+            <p class="text-surface-600 text-sm leading-relaxed">
+              {comparison.excerpt}
+            </p>
+            <div class="mt-4 flex items-center text-sm font-semibold text-primary-600 group-hover:text-primary-700">
+              Read Full Comparison
+              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <!-- Coming Soon -->
+      <div class="text-center py-12 bg-surface-50 rounded-2xl border border-dashed border-surface-200">
+        <div class="text-3xl mb-3">🚀</div>
+        <h3 class="text-xl font-bold text-surface-900 mb-2">More Comparisons Coming Soon</h3>
+        <p class="text-surface-600 max-w-md mx-auto">
+          We're constantly adding new {category.name.toLowerCase()} comparisons. Check back regularly or subscribe to our newsletter for updates.
+        </p>
+        <a href="/categories" class="btn-secondary mt-6">
+          Browse All Categories
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
