@@ -89,6 +89,24 @@ const popularComparisons = [
     </div>
   </section>
 
+  {/* Auto-redirect unknown comparisons to VS Generator */}
+  <script is:inline>
+    (function() {
+      var path = window.location.pathname;
+      var match = path.match(/^\/compare\/(.+)$/);
+      if (match) {
+        var slug = match[1];
+        if (slug.includes('-vs-')) {
+          var parts = slug.split('-vs-');
+          var decode = function(s) { return s.replace(/-/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); }); };
+          var entityA = decode(parts[0]);
+          var entityB = decode(parts[1]);
+          window.location.replace('/vs-generator?a=' + encodeURIComponent(entityA) + '&b=' + encodeURIComponent(entityB));
+        }
+      }
+    })();
+  </script>
+
   <script>
     function handleSearch() {
       const input = document.getElementById('notfound-search') as HTMLInputElement;
