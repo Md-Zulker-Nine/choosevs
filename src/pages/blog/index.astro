@@ -10,6 +10,8 @@ const currentPage = Math.max(1, parseInt(pageParam || '1', 10));
 
 // Dynamically load all blog posts
 const postFiles = import.meta.glob('./[!index]*.mdx', { eager: true });
+// Debug: log loaded files
+console.log('Loaded blog posts:', Object.keys(postFiles));
 
 const allPosts = Object.entries(postFiles)
   .map(([path, module]: [string, any]) => {
