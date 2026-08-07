@@ -46,7 +46,8 @@ jobs:
           git config user.name "ChooseVS Bot"
           git config user.email "bot@choosevs.com"
           mkdir -p public/images
-          git add -A src/pages/blog/ public/images/
+          mkdir -p public/images
+          git add -A src/pages/blog/ public/images/ 2>/dev/null || true
           git diff --staged --quiet || git commit -m "Blog: ${{ github.event.inputs.posts || '3' }} posts ($(date +%Y-%m-%d))"
           git push
 
@@ -72,6 +73,7 @@ jobs:
         run: |
           git config user.name "ChooseVS Bot"
           git config user.email "bot@choosevs.com"
-          git add src/pages/compare/ public/images/
+          mkdir -p public/images
+          git add src/pages/compare/ public/images/ 2>/dev/null || true
           git diff --staged --quiet || git commit -m "Compare: ${{ github.event.inputs.comparisons || '5' }} pages ($(date +%Y-%m-%d))"
           git push
