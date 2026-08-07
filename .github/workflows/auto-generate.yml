@@ -46,7 +46,7 @@ jobs:
           git config user.email "bot@choosevs.com"
           mkdir -p public/images
           git add -A src/pages/blog/ public/images/ 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "Auto: 1 blog post ($(date +%Y-%m-%d %H:%M))"
+          git diff --staged --quiet || git commit -m "Auto: 1 blog post ($(date +%F))"
           git push
 
   generate-comparisons:
@@ -72,5 +72,5 @@ jobs:
           git config user.email "bot@choosevs.com"
           mkdir -p public/images
           git add src/pages/compare/ public/images/ 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "Auto: 1 comparison ($(date +%Y-%m-%d %H:%M))"
+          git diff --staged --quiet || git commit -m "Auto: 1 comparison ($(date +%F))"
           git push
