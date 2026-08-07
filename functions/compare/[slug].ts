@@ -25,7 +25,7 @@ async function callGemini(prompt: string, apiKey: string): Promise<string> {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.4, maxOutputTokens: 3000, responseMimeType: 'application/json' },
+          generationConfig: { temperature: 0.4, maxOutputTokens: 8192, responseMimeType: 'application/json' },
         }),
       });
       if (!response.ok) throw new Error(`Gemini API ${response.status}`);

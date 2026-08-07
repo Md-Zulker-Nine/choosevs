@@ -13,7 +13,7 @@ export const AI_CONFIG = {
   models: AI_MODELS,
   apiBaseUrl: 'https://generativelanguage.googleapis.com/v1beta',
   apiKeyEnvVar: 'GEMINI_API_KEY',
-  maxTokens: 4000,
+  maxTokens: 8192,
   temperature: 0.4,
   topP: 0.9,
   topK: 40,
