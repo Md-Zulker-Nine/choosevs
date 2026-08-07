@@ -70,7 +70,7 @@ function generateHTML(entityA: string, entityB: string, data: any): string {
 
 export const onRequest: PagesFunction<{ GEMINI_API_KEY: string }> = async (context) => {
   const { request, params, env } = context;
-  const slug = params(slug as string;
+  const slug = params.slug as string;
 
   // Known comparison → serve static
   if (slug && KNOWN_COMPARISONS.includes(slug)) {
