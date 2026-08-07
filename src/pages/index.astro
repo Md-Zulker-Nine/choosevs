@@ -15,11 +15,23 @@ const popularComparisons = [
   { slug: 'tesla-model-3-vs-bmw-i4', title: 'Tesla Model 3 vs BMW i4', category: 'Cars' },
 ];
 
-const latestPosts = [
-  { slug: 'best-smartphones-2025', title: 'Best Smartphones of 2025: Comprehensive Comparison', date: '2025-01-15', readTime: '12 min read', category: 'Technology' },
-  { slug: 'ev-buying-guide', title: 'Electric Vehicle Buying Guide: What to Look For', date: '2025-01-10', readTime: '8 min read', category: 'Cars' },
-  { slug: 'streaming-services-compared', title: 'All Streaming Services Compared: Find Your Perfect Match', date: '2025-01-05', readTime: '10 min read', category: 'Entertainment' },
-];
+// Dynamically load latest 3 blog posts
+const postFiles = import.meta.glob('./blog/[!index]*.mdx', { eager: true });
+const allPosts = Object.entries(postFiles)
+  .map(([path, module]: [string, any]) => {
+    const slug = path.replace('./blog/', '').replace('.mdx', '');
+    const fm = module.frontmatter || {};
+    return {
+      title: fm.title || slug,
+      description: fm.description || '',
+      slug,
+      date: fm.date || new Date().toISOString().slice(0, 10),
+      category: fm.category || 'tech',
+      readTime: fm.readTime || '5 min read',
+    };
+  })
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  .slice(0, 3);
 ---
 
 <BaseLayout
@@ -324,7 +336,7 @@ const latestPosts = [
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {latestPosts.map((post) => (
+         {allPosts.map((post) => (
           <a href={`/blog/${post.slug}`} class="card overflow-hidden group hover:-translate-y-1 transition-all">
             <div class="h-48 bg-gradient-to-br from-primary-100 to-accent-100 flex items-center justify-center">
               <svg class="w-16 h-16 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
