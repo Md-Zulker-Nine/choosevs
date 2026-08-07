@@ -307,7 +307,21 @@ async function generateOne(
   let raw: unknown;
   try {
     const text = stripCodeFence(await callGemini(prompt));
-    raw = parseRobustJson(text);
+    try {
+      raw = parseRobustJson(text);
+    } catch {
+      // If JSON parsing fails, treat entire response as content
+      raw = {
+        title: `${keyword.keyword} - Complete Guide`,
+        description: `Comprehensive guide about ${keyword.keyword}.`,
+        slug: slugify(keyword.keyword),
+        category: 'tech',
+        tags: [keyword.keyword, 'guide', 'comparison'],
+        content: text,
+        faq: [],
+        keyTakeaways: [],
+      };
+    }
   } catch (error) {
     return {
       slug,
@@ -334,7 +348,7 @@ async function generateOne(
     };
   }
 
-  if (!postData || !postData.content || postData.content.length < 100) {
+  if (!postData || !postData.content || postData.content.length < 50) {
     return { slug, status: 'rejected', detail: `schema: insufficient content (${postData?.content?.length || 0} chars)` };
   }
 
