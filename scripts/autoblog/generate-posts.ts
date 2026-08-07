@@ -137,6 +137,54 @@ function stripCodeFence(text: string): string {
   return start !== -1 && end > start ? body.slice(start, end + 1) : body.trim();
 }
 
+// Generate relevant image URL for a keyword
+function getImageUrl(keyword: string, category: string): string {
+  const images: Record<string, string[]> = {
+    tech: [
+      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=1200&h=630&fit=crop',
+    ],
+    crypto: [
+      'https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=1200&h=630&fit=crop',
+    ],
+    travel: [
+      'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&h=630&fit=crop',
+    ],
+    cars: [
+      'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1542362567-b07e54358753?w=1200&h=630&fit=crop',
+    ],
+    movies: [
+      'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1200&h=630&fit=crop',
+    ],
+    'ai-models': [
+      'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&h=630&fit=crop',
+    ],
+    countries: [
+      'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200&h=630&fit=crop',
+      'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1200&h=630&fit=crop',
+    ],
+  };
+
+  const catImages = images[category] || images.tech;
+  // Use keyword hash to pick consistent image
+  let hash = 0;
+  for (let i = 0; i < keyword.length; i++) {
+    hash = ((hash << 5) - hash) + keyword.charCodeAt(i);
+    hash |= 0;
+  }
+  return catImages[Math.abs(hash) % catImages.length];
+}
+
 // Parse JSON with recovery for truncated/malformed responses
 function parseRobustJson(text: string): unknown {
   // Try direct parse first
@@ -254,10 +302,10 @@ function renderMdx(post: GeneratedPost, keyword: Keyword, report: QualityReport)
     `keyword: ${escapeYaml(keyword.keyword)}`,
     'tags:',
     ...post.tags.map((t) => `  - ${escapeYaml(t)}`),
-    `image: ${escapeYaml(GENERATION_CONFIG.defaultImage)}`,
+    `image: ${escapeYaml(getImageUrl(keyword.keyword, post.category))}`,
     `author: ${escapeYaml(GENERATION_CONFIG.defaultAuthor)}`,
     `readTime: ${escapeYaml(readTimeFor(report.metrics.wordCount))}`,
-    'layout: ../../layouts/BaseLayout.astro',
+    'layout: ../../components/blog/MdxPost.astro',
     '---',
   ].join('\n');
 

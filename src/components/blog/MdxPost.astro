@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../lib/constants';
+
+const { frontmatter, rawContent } = Astro.props;
+const title = frontmatter.title || 'Blog Post';
+const description = frontmatter.description || '';
+const date = frontmatter.date || new Date().toISOString().slice(0, 10);
+const category = frontmatter.category || 'tech';
+const tags = frontmatter.tags || [];
+const image = frontmatter.image || '/og-image.jpg';
+---
+
+<BaseLayout title={`${title} | ${SITE.name}`} description={description} image={image}>
+  <article class="section-padding">
+    <div class="container-custom">
+      <div class="max-w-3xl mx-auto">
+        <!-- Article Header -->
+        <header class="mb-10">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="badge-primary">{category}</span>
+            <span class="text-sm text-surface-500">{date}</span>
+            {frontmatter.readTime && <span class="text-sm text-surface-500">{frontmatter.readTime}</span>}
+          </div>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-surface-900 mb-4">
+            {title}
+          </h1>
+          {description && (
+            <p class="text-lg text-surface-600 leading-relaxed">{description}</p>
+          )}
+          <div class="flex items-center gap-4 text-sm text-surface-600 mt-4">
+            <span>By {frontmatter.author || 'ChooseVS Team'}</span>
+            <span>|</span>
+            <span>Last updated: {date}</span>
+          </div>
+        </header>
+
+        <!-- Featured Image -->
+        {image && image !== '/og-image.jpg' && (
+          <div class="mb-10 rounded-2xl overflow-hidden">
+            <img src={image} alt={title} class="w-full h-64 md:h-96 object-cover" />
+          </div>
+        )}
+
+        <!-- Article Body -->
+        <div class="prose prose-surface prose-lg max-w-none
+                    prose-headings:font-display prose-headings:tracking-tight
+                    prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
+                    prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
+                    prose-p:leading-relaxed prose-p:text-surface-600
+                    prose-a:text-primary-600 prose-a:no-underline hover:prose-a:text-primary-700
+                    prose-strong:text-surface-800
+                    prose-code:text-primary-600 prose-code:bg-primary-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+                    prose-pre:bg-surface-900
+                    prose-blockquote:border-primary-300 prose-blockquote:text-surface-600
+                    prose-img:rounded-xl
+                    prose-table:rounded-xl prose-table:overflow-hidden
+                    prose-th:bg-surface-50 prose-th:px-4 prose-th:py-3
+                    prose-td:px-4 prose-td:py-3 prose-td:border-surface-200">
+          <Fragment set:html={rawContent} />
+        </div>
+
+        <!-- Tags -->
+        {tags.length > 0 && (
+          <div class="mt-12 pt-8 border-t border-surface-200">
+            <div class="flex flex-wrap gap-2">
+              {tags.map((tag: string) => (
+                <span class="px-3 py-1 rounded-full bg-surface-100 text-surface-600 text-sm">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Back to Blog -->
+        <div class="mt-12 pt-8 border-t border-surface-200">
+          <a href="/blog" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-semibold">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to All Articles
+          </a>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Schema.org Article Markup -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": title,
+    "description": description,
+    "image": image,
+    "author": { "@type": "Organization", "name": frontmatter.author || "ChooseVS Team" },
+    "publisher": {
+      "@type": "Organization",
+      "name": SITE.name,
+      "logo": { "@type": "ImageObject", "url": `${SITE.url}/favicon.svg` },
+    },
+    "datePublished": date,
+    "dateModified": date,
+    "keywords": tags.join(', '),
+    "mainEntityOfPage": { "@type": "WebPage", "@id": `${SITE.url}/blog/${frontmatter.slug || ''}` },
+  })} />
+</BaseLayout>
