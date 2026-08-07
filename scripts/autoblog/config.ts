@@ -10,12 +10,12 @@ export const AI_CONFIG = {
   model: 'gemini-2.0-flash',
   apiBaseUrl: 'https://generativelanguage.googleapis.com/v1beta',
   apiKeyEnvVar: 'GEMINI_API_KEY',
-  maxTokens: 3000,
+  maxTokens: 4000,
   temperature: 0.4,
   topP: 0.9,
   topK: 40,
   responseMimeType: 'application/json',
-  timeoutMs: 90_000,
+  timeoutMs: 120_000,
   maxRetries: 3,
   retryDelayMs: 2_000,
 };
@@ -37,10 +37,10 @@ export const GENERATION_CONFIG = {
 };
 
 export const QUALITY_CONFIG = {
-  minWords: 800,
-  maxWords: 1200,
-  minH2Sections: 4,
-  minFaqItems: 3,
+  minWords: 1000,
+  maxWords: 1500,
+  minH2Sections: 5,
+  minFaqItems: 4,
   maxFaqItems: 6,
   minKeywordDensity: 0.4,
   maxKeywordDensity: 2.5,

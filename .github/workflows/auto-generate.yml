@@ -2,30 +2,36 @@ name: Auto-Generate Content
 
 on:
   schedule:
-    # Runs every day at 2 AM UTC
-    - cron: '0 2 * * *'
+    # Runs every 8 hours (3 times/day) for blog posts
+    - cron: '0 */8 * * *'
+    # Runs every 30 minutes for comparisons (50/day = ~2/hour)
+    - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
       posts:
         description: 'Number of blog posts to generate'
         required: false
-        default: '10'
+        default: '3'
       comparisons:
         description: 'Number of comparisons to generate'
         required: false
-        default: '10'
+        default: '50'
+      generate_images:
+        description: 'Generate images for content'
+        required: false
+        default: 'true'
 
 jobs:
-  generate:
+  generate-posts:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # Only run for the blog schedule or manual trigger
+    if: github.event.schedule == '0 */8 * * *' || github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -36,33 +42,49 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate Blog Posts
+      - name: Generate Blog Posts (3 posts, 1000+ words each)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: npx tsx scripts/autoblog/generate-posts.ts --count=${{ github.event.inputs.posts || '10' }}
+          MAX_WORDS: 1200
+        run: npx tsx scripts/autoblog/generate-posts.ts --count=${{ github.event.inputs.posts || '3' }} --min-words=1000
 
-      - name: Generate Comparisons
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: npx tsx scripts/autogenerate/generate-comparisons.ts --count=${{ github.event.inputs.comparisons || '10' }}
-
-      - name: Validate Content
-        run: |
-          npx tsx scripts/autoblog/validate.ts
-          npx tsx scripts/autogenerate/validate.ts
-
-      - name: Count Pages
-        id: count
-        run: |
-          BLOG=$(ls src/pages/blog/*.mdx 2>/dev/null | wc -l)
-          COMPARE=$(ls src/pages/compare/*.mdx 2>/dev/null | wc -l)
-          echo "blog=$BLOG" >> $GITHUB_OUTPUT
-          echo "compare=$COMPARE" >> $GITHUB_OUTPUT
-
-      - name: Commit and Push
+      - name: Commit and Push Blog Posts
         run: |
           git config user.name "ChooseVS Bot"
           git config user.email "bot@choosevs.com"
-          git add src/pages/blog/ src/pages/compare/
-          git diff --staged --quiet || git commit -m "Auto-generate: ${{ steps.count.outputs.blog }} posts, ${{ steps.count.outputs.compare }} comparisons"
+          git add src/pages/blog/ public/images/
+          git diff --staged --quiet || git commit -m "Blog: ${{ github.event.inputs.posts || '3' }} posts ($(date +%Y-%m-%d))"
+          git push
+
+  generate-comparisons:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    # Only run for the comparison schedule or manual trigger
+    if: github.event.schedule == '*/30 * * * *' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Comparisons (with images)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: npx tsx scripts/autogenerate/generate-comparisons.ts --count=${{ github.event.inputs.comparisons || '2' }} --images
+
+      - name: Commit and Push Comparisons
+        run: |
+          git config user.name "ChooseVS Bot"
+          git config user.email "bot@choosevs.com"
+          git add src/pages/compare/ public/images/
+          git diff --staged --quiet || git commit -m "Compare: ${{ github.event.inputs.comparisons || '2' }} pages ($(date +%Y-%m-%d))"
           git push

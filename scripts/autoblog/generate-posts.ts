@@ -35,6 +35,7 @@ interface CliOptions {
   dryRun: boolean;
   force: boolean;
   outputDir: string;
+  minWords?: number;
 }
 
 function parseArgs(argv: string[]): CliOptions {
@@ -61,6 +62,7 @@ function parseArgs(argv: string[]): CliOptions {
   }
 
   const rawDifficulty = get('max-difficulty');
+  const rawMinWords = get('min-words');
 
   return {
     count,
@@ -69,6 +71,7 @@ function parseArgs(argv: string[]): CliOptions {
     dryRun: argv.includes('--dry-run'),
     force: argv.includes('--force'),
     outputDir: get('out') ? path.resolve(get('out') as string) : PATHS.outputDir,
+    minWords: rawMinWords ? Number.parseInt(rawMinWords, 10) : undefined,
   };
 }
 
@@ -101,7 +104,7 @@ async function loadTemplate(): Promise<HandlebarsTemplateDelegate> {
   return Handlebars.compile(source, { noEscape: true });
 }
 
-function buildPrompt(template: HandlebarsTemplateDelegate, keyword: Keyword): string {
+function buildPrompt(template: HandlebarsTemplateDelegate, keyword: Keyword, minWords?: number): string {
   return template({
     site: { name: 'ChooseVS', url: 'https://choosevs.com' },
     keyword: keyword.keyword,
@@ -112,7 +115,7 @@ function buildPrompt(template: HandlebarsTemplateDelegate, keyword: Keyword): st
     suggestedSlug: slugify(keyword.keyword),
     date: todayIso(),
     year: new Date().getFullYear(),
-    minWords: QUALITY_CONFIG.minWords,
+    minWords: minWords || QUALITY_CONFIG.minWords,
     maxWords: QUALITY_CONFIG.maxWords,
     minH2Sections: QUALITY_CONFIG.minH2Sections,
     minFaqItems: QUALITY_CONFIG.minFaqItems,
@@ -243,7 +246,7 @@ async function generateOne(
     if (exists) return { slug, status: 'skipped', detail: 'file already exists' };
   }
 
-  const prompt = buildPrompt(template, keyword);
+  const prompt = buildPrompt(template, keyword, options.minWords);
 
   if (options.dryRun) {
     return { slug, status: 'skipped', detail: `dry run (prompt ${prompt.length} chars)` };
