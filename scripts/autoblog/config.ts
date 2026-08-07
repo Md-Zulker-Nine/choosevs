@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
 
 // Multiple models for fallback - if one fails, try the next
-export const AI_MODELS = ['gemini-3.6-flash', 'gemini-3.5-flash-lite'] as const;
+export const AI_MODELS = ['gemini-2.5-flash', 'gemini-2.5-pro'] as const;
 
 export const AI_CONFIG = {
   provider: 'google' as const,
