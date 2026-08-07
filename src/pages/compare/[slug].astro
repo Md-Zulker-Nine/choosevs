@@ -1,4 +1,6 @@
 ---
+export const prerender = false;
+
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE } from '../../lib/constants';
 
@@ -344,7 +346,7 @@ export function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const data: ComparisonData | undefined = Astro.props.data;
+const data: ComparisonData | undefined = comparisons[slug] ?? (Astro.props?.data || undefined);
 
 // Extract entity names from slug for unknown comparisons
 function slugToNames(s: string): { entityA: string; entityB: string } {
