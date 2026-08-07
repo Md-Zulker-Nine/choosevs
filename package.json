@@ -17,6 +17,7 @@
     "generate:all": "tsx scripts/generate-all.ts"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^14.2.0",
     "@astrojs/mdx": "^3.1.0",
     "@astrojs/sitemap": "^3.1.0",
     "@astrojs/tailwind": "^5.1.0",
@@ -27,11 +28,11 @@
     "tailwindcss": "^3.4.0",
     "zod": "^3.23.0"
   },
-    "devDependencies": {
-      "@types/node": "^26.1.2",
-      "dotenv": "^16.4.5",
-      "gray-matter": "^4.0.3",
-      "handlebars": "^4.7.9",
-      "tsx": "^4.23.11"
-    }
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "dotenv": "^16.4.5",
+    "gray-matter": "^4.0.3",
+    "handlebars": "^4.7.9",
+    "tsx": "^4.23.11"
+  }
 }

@@ -1,6 +1,4 @@
 ---
-export const prerender = false;
-
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE } from '../../lib/constants';
 
@@ -466,7 +464,7 @@ const faqJsonLd = data ? {
     </section>
   )}
 
-  <article class="container-custom py-8 md:py-12">
+  <article class="container-custom py-8 md:py-12" {...(data ? { 'data-comparison': 'true' } : {})}>
     {/* Header - only shown when data exists */}
     {data && (
     <>
@@ -724,3 +722,20 @@ const faqJsonLd = data ? {
   {breadcrumbJsonLd && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />}
   {faqJsonLd && <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />}
 </BaseLayout>
+
+{/* Client-side redirect for unknown comparisons */}
+<script is:inline>
+  (function() {
+    var hasData = document.querySelector('[data-comparison="true"]');
+    if (!hasData) {
+      var slug = window.location.pathname.split('/compare/').pop();
+      if (slug && slug.includes('-vs-')) {
+        var parts = slug.split('-vs-');
+        var decode = function(s) { return s.replace(/-/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); }); };
+        var entityA = decode(parts[0]);
+        var entityB = decode(parts[1]);
+        window.location.href = '/vs-generator?a=' + encodeURIComponent(entityA) + '&b=' + encodeURIComponent(entityB);
+      }
+    }
+  })();
+</script>
