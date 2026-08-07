@@ -123,49 +123,52 @@ function stripCodeFence(text: string): string {
 
 async function callGemini(prompt: string): Promise<string> {
   const apiKey = getApiKey();
-  const url = `${AI_CONFIG.apiBaseUrl}/models/${AI_CONFIG.model}:generateContent?key=${apiKey}`;
-
   let lastError: unknown;
 
-  for (let attempt = 1; attempt <= AI_CONFIG.maxRetries; attempt += 1) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), AI_CONFIG.timeoutMs);
+  // Try each model in order
+  for (const model of AI_CONFIG.models) {
+    const url = `${AI_CONFIG.apiBaseUrl}/models/${model}:generateContent?key=${apiKey}`;
 
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: {
-            temperature: AI_CONFIG.temperature,
-            topP: AI_CONFIG.topP,
-            topK: AI_CONFIG.topK,
-            maxOutputTokens: AI_CONFIG.maxTokens,
-            responseMimeType: AI_CONFIG.responseMimeType,
-          },
-        }),
-      });
+    for (let attempt = 1; attempt <= AI_CONFIG.maxRetries; attempt += 1) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), AI_CONFIG.timeoutMs);
 
-      if (!response.ok) {
-        throw new Error(`Gemini API ${response.status}: ${await response.text()}`);
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: AI_CONFIG.temperature,
+              topP: AI_CONFIG.topP,
+              topK: AI_CONFIG.topK,
+              maxOutputTokens: AI_CONFIG.maxTokens,
+              responseMimeType: AI_CONFIG.responseMimeType,
+            },
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Gemini API ${response.status}: ${await response.text()}`);
+        }
+
+        const payload = (await response.json()) as {
+          candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+        };
+        const text = payload.candidates?.[0]?.content?.parts?.map((p) => p.text ?? '').join('') ?? '';
+        if (!text.trim()) throw new Error('Gemini returned an empty response');
+
+        return text;
+      } catch (error) {
+        lastError = error;
+        if (attempt < AI_CONFIG.maxRetries) {
+          await sleep(AI_CONFIG.retryDelayMs * attempt);
+        }
+      } finally {
+        clearTimeout(timer);
       }
-
-      const payload = (await response.json()) as {
-        candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-      };
-      const text = payload.candidates?.[0]?.content?.parts?.map((p) => p.text ?? '').join('') ?? '';
-      if (!text.trim()) throw new Error('Gemini returned an empty response');
-
-      return text;
-    } catch (error) {
-      lastError = error;
-      if (attempt < AI_CONFIG.maxRetries) {
-        await sleep(AI_CONFIG.retryDelayMs * attempt);
-      }
-    } finally {
-      clearTimeout(timer);
     }
   }
 

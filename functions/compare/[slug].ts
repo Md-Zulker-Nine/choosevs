@@ -12,19 +12,31 @@ const KNOWN_COMPARISONS = [
   'tesla-model-3-vs-bmw-i4',
 ];
 
+const AI_MODELS = ['gemini-3.6-flash', 'gemini-3.5-flash-lite'];
+
 async function callGemini(prompt: string, apiKey: string): Promise<string> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.4, maxOutputTokens: 3000, responseMimeType: 'application/json' },
-    }),
-  });
-  if (!response.ok) throw new Error(`Gemini API error: ${response.status}`);
-  const data = await response.json() as any;
-  return data.candidates?.[0]?.content?.parts?.map((p: any) => p.text ?? '').join('') ?? '';
+  let lastError: unknown;
+
+  for (const model of AI_MODELS) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.4, maxOutputTokens: 3000, responseMimeType: 'application/json' },
+        }),
+      });
+      if (!response.ok) throw new Error(`Gemini API ${response.status}`);
+      const data = await response.json() as any;
+      const text = data.candidates?.[0]?.content?.parts?.map((p: any) => p.text ?? '').join('') ?? '';
+      if (text.trim()) return text;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error('All models failed');
 }
 
 function generateHTML(entityA: string, entityB: string, data: any): string {

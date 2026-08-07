@@ -5,9 +5,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
 
+// Multiple models for fallback - if one fails, try the next
+export const AI_MODELS = ['gemini-3.6-flash', 'gemini-3.5-flash-lite'] as const;
+
 export const AI_CONFIG = {
   provider: 'google' as const,
-  model: 'gemini-2.5-flash',
+  models: AI_MODELS,
   apiBaseUrl: 'https://generativelanguage.googleapis.com/v1beta',
   apiKeyEnvVar: 'GEMINI_API_KEY',
   maxTokens: 4000,
@@ -16,8 +19,8 @@ export const AI_CONFIG = {
   topK: 40,
   responseMimeType: 'application/json',
   timeoutMs: 120_000,
-  maxRetries: 3,
-  retryDelayMs: 2_000,
+  maxRetries: 2,
+  retryDelayMs: 1_500,
 };
 
 export const PATHS = {
