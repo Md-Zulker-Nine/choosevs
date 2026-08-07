@@ -2,10 +2,10 @@ name: Auto-Generate Content
 
 on:
   schedule:
-    # Runs every 8 hours (3 times/day) for blog posts
+    # Blog posts: 3 times/day (every 8 hours)
     - cron: '0 */8 * * *'
-    # Runs every 30 minutes for comparisons (50/day = ~2/hour)
-    - cron: '*/30 * * * *'
+    # Comparisons: Start conservative (5/day), scale up later
+    - cron: '0 */4 * * *'
   workflow_dispatch:
     inputs:
       posts:
@@ -15,7 +15,7 @@ on:
       comparisons:
         description: 'Number of comparisons to generate'
         required: false
-        default: '50'
+        default: '5'
       generate_images:
         description: 'Generate images for content'
         required: false
@@ -26,7 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    # Only run for the blog schedule or manual trigger
     if: github.event.schedule == '0 */8 * * *' || github.event_name == 'workflow_dispatch'
 
     steps:
@@ -45,7 +44,7 @@ jobs:
       - name: Generate Blog Posts (3 posts, 1000+ words each)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          MAX_WORDS: 1200
+          MAX_WORDS: 1500
         run: npx tsx scripts/autoblog/generate-posts.ts --count=${{ github.event.inputs.posts || '3' }} --min-words=1000
 
       - name: Commit and Push Blog Posts
@@ -60,8 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    # Only run for the comparison schedule or manual trigger
-    if: github.event.schedule == '*/30 * * * *' || github.event_name == 'workflow_dispatch'
+    if: github.event.schedule == '0 */4 * * *' || github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Checkout repository
@@ -73,18 +71,15 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Generate Comparisons (with images)
+      - name: Generate Comparisons (conservative start)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: npx tsx scripts/autogenerate/generate-comparisons.ts --count=${{ github.event.inputs.comparisons || '2' }} --images
+        run: npx tsx scripts/autogenerate/generate-comparisons.ts --count=${{ github.event.inputs.comparisons || '5' }} --images
 
       - name: Commit and Push Comparisons
         run: |
           git config user.name "ChooseVS Bot"
           git config user.email "bot@choosevs.com"
           git add src/pages/compare/ public/images/
-          git diff --staged --quiet || git commit -m "Compare: ${{ github.event.inputs.comparisons || '2' }} pages ($(date +%Y-%m-%d))"
+          git diff --staged --quiet || git commit -m "Compare: ${{ github.event.inputs.comparisons || '5' }} pages ($(date +%Y-%m-%d))"
           git push
