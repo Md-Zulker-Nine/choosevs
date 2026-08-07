@@ -17,7 +17,6 @@
     "generate:all": "tsx scripts/generate-all.ts"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^14.2.0",
     "@astrojs/mdx": "^3.1.0",
     "@astrojs/sitemap": "^3.1.0",
     "@astrojs/tailwind": "^5.1.0",
