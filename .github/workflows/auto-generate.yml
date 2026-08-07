@@ -2,9 +2,9 @@ name: Auto-Generate Content
 
 on:
   schedule:
-    # Blog posts: 3 runs/day, 1 post per run = 3 posts/day
+    # Blog posts: 3 runs/day
     - cron: '0 2,10,18 * * *'
-    # Comparisons: 8 runs/day, 1 comparison per run = 8/day
+    # Comparisons: 8 runs/day
     - cron: '0 0,3,6,9,12,15,18,21 * * *'
   workflow_dispatch:
     inputs:
@@ -27,25 +27,20 @@ jobs:
     permissions:
       contents: write
     if: github.event.schedule == '0 */8 * * *' || github.event_name == 'workflow_dispatch'
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - name: Install dependencies
         run: npm ci
-
       - name: Generate Blog Posts (3 posts, 1000+ words each)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           MAX_WORDS: 1500
         run: npx tsx scripts/autoblog/generate-posts.ts --count=${{ github.event.inputs.posts || '3' }} --min-words=1000
-
       - name: Commit and Push Blog Posts
         run: |
           git config user.name "ChooseVS Bot"
@@ -60,21 +55,19 @@ jobs:
     permissions:
       contents: write
     if: github.event.schedule == '0 */4 * * *' || github.event_name == 'workflow_dispatch'
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
+      - name: Install dependencies
+        run: npm ci
       - name: Generate Comparisons (conservative start)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: npx tsx scripts/autogenerate/generate-comparisons.ts --count=${{ github.event.inputs.comparisons || '5' }} --images
-
       - name: Commit and Push Comparisons
         run: |
           git config user.name "ChooseVS Bot"
