@@ -434,14 +434,33 @@ async function generateOne(
 
 async function main() {
   const options = parseArgs(process.argv.slice(2));
-  const keywords = getKeywords({
-    count: options.count,
+  const allKeywords = getKeywords({
+    count: 999, // Get all keywords, we'll filter
     category: options.category,
     maxDifficulty: options.maxDifficulty,
   });
 
-  if (keywords.length === 0) {
+  if (allKeywords.length === 0) {
     console.log('No keywords matched the given filters.');
+    return;
+  }
+
+  // Filter out keywords that already have posts
+  const keywords: Keyword[] = [];
+  for (const kw of allKeywords) {
+    if (keywords.length >= options.count) break;
+    const slug = slugify(kw.keyword);
+    const outFile = path.join('src/pages/blog', `${slug}.mdx`);
+    const exists = await fs.access(outFile).then(() => true).catch(() => false);
+    if (!exists || options.force) {
+      keywords.push(kw);
+    } else {
+      console.log(`  [skip] ${kw.keyword} (already exists)`);
+    }
+  }
+
+  if (keywords.length === 0) {
+    console.log('All keywords already have posts. Nothing to generate.');
     return;
   }
 

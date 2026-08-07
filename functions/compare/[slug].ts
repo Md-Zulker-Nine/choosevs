@@ -12,7 +12,7 @@ const KNOWN_COMPARISONS = [
   'tesla-model-3-vs-bmw-i4',
 ];
 
-const AI_MODELS = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.5-pro'];
+const AI_MODELS = ['gemini-3.6-flash', 'gemini-3.5-flash-lite', 'gemini-3.6-flash', 'gemini-3.5-flash-lite'];
 
 async function callGemini(prompt: string, apiKey: string): Promise<string> {
   let lastError: unknown;

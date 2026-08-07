@@ -635,10 +635,21 @@ async function main() {
     minPriority: options.minPriority,
   });
 
-  const queue = allPairs.slice(0, options.count);
+  // Filter out pairs that already have comparisons
+  const queue: typeof allPairs = [];
+  for (const pair of allPairs) {
+    if (queue.length >= options.count) break;
+    const outFile = path.join(options.outputDir, `${pair.slug}.mdx`);
+    const exists = await fs.access(outFile).then(() => true).catch(() => false);
+    if (!exists || options.force) {
+      queue.push(pair);
+    } else {
+      console.log(`  [skip] ${pair.slug} (already exists)`);
+    }
+  }
 
   if (queue.length === 0) {
-    console.log('No entity pairs matched the given filters.');
+    console.log('All pairs already have comparisons. Nothing to generate.');
     return;
   }
 
