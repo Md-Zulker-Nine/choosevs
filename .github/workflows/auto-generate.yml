@@ -2,10 +2,10 @@ name: Auto-Generate Content
 
 on:
   schedule:
-    # Blog posts: 3 times/day (every 8 hours)
-    - cron: '0 */8 * * *'
-    # Comparisons: Start conservative (5/day), scale up later
-    - cron: '0 */4 * * *'
+    # Blog posts: 3 posts once daily at 2 AM UTC
+    - cron: '0 2 * * *'
+    # Comparisons: ~50 posts/day (every hour, 2 per run = 48/day)
+    - cron: '0 * * * *'
   workflow_dispatch:
     inputs:
       posts:
@@ -15,7 +15,7 @@ on:
       comparisons:
         description: 'Number of comparisons to generate'
         required: false
-        default: '5'
+        default: '2'
       generate_images:
         description: 'Generate images for content'
         required: false
