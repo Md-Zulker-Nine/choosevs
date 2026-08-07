@@ -70,6 +70,7 @@ export const CATEGORIES = [
 
 export const NAV_LINKS = [
   { label: 'Home', href: '/' },
+  { label: 'VS Generator', href: '/vs-generator' },
   { label: 'Categories', href: '/categories' },
   { label: 'Blog', href: '/blog' },
   { label: 'About', href: '/about' },

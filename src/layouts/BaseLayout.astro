@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ShareButtons from '../components/ShareButtons.astro';
 import { SITE } from '../lib/constants';
 
 const {
@@ -68,6 +69,10 @@ const canonicalURL = new URL(Astro.url.pathname, SITE.url).href;
     <main class="flex-1">
       <slot />
     </main>
+    <!-- Share Buttons on every page -->
+    <div class="container-custom py-8 border-t border-surface-100">
+      <ShareButtons title={title} url={canonicalURL} description={description} />
+    </div>
     <Footer />
   </body>
 </html>

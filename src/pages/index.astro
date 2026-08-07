@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import TrendingComparisons from '../components/TrendingComparisons.astro';
+import PopularPairs from '../components/PopularPairs.astro';
 import { SITE, CATEGORIES } from '../lib/constants';
 
 const popularComparisons = [
@@ -352,6 +354,47 @@ const latestPosts = [
           </a>
         ))}
       </div>
+    </div>
+  </section>
+
+  <!-- VS Generator CTA Section -->
+  <section class="section-padding bg-gradient-to-br from-surface-900 via-surface-800 to-surface-900 relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.15),transparent_60%)]"></div>
+    <div class="container-custom relative text-center">
+      <div class="inline-flex items-center gap-2 bg-primary-500/20 text-primary-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
+        <span class="w-2 h-2 bg-primary-400 rounded-full animate-pulse"></span>
+        New Feature
+      </div>
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4">
+        Create Your Own <span class="gradient-text">Comparison</span>
+      </h2>
+      <p class="text-surface-300 text-lg max-w-2xl mx-auto mb-8">
+        Can't find what you're looking for? Generate any comparison in seconds. Share it with the world.
+      </p>
+      <a href="/vs-generator" class="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-primary-500 to-accent-500 text-white font-bold rounded-xl hover:from-primary-600 hover:to-accent-600 transition-all shadow-lg shadow-primary-500/30 text-lg">
+        Try VS Generator
+        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Trending Section -->
+  <section class="section-padding bg-white">
+    <div class="container-custom">
+      <TrendingComparisons />
+    </div>
+  </section>
+
+  <!-- Popular Pairs Section -->
+  <section class="section-padding bg-surface-50">
+    <div class="container-custom">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Popular Comparisons</h2>
+        <p class="text-surface-600 text-lg">Click any pair to instantly compare</p>
+      </div>
+      <PopularPairs />
     </div>
   </section>
 
