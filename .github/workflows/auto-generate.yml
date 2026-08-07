@@ -48,6 +48,8 @@ jobs:
           git add -A src/pages/blog/ public/images/ 2>/dev/null || true
           git diff --staged --quiet || git commit -m "Auto: 1 blog post ($(date +%F))"
           git push
+      - name: Trigger Cloudflare Deploy
+        run: curl -X POST "${{ secrets.CF_DEPLOY_HOOK }}"
 
   generate-comparisons:
     runs-on: ubuntu-latest
@@ -74,3 +76,5 @@ jobs:
           git add src/pages/compare/ public/images/ 2>/dev/null || true
           git diff --staged --quiet || git commit -m "Auto: 1 comparison ($(date +%F))"
           git push
+      - name: Trigger Cloudflare Deploy
+        run: curl -X POST "${{ secrets.CF_DEPLOY_HOOK }}"
