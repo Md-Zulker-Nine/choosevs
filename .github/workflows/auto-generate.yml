@@ -2,10 +2,10 @@ name: Auto-Generate Content
 
 on:
   schedule:
-    # Blog posts: 3 runs/day
+    # Blog posts: 3 runs/day at 2AM, 10AM, 6PM UTC
     - cron: '0 2,10,18 * * *'
-    # Comparisons: 8 runs/day
-    - cron: '0 0,3,6,9,12,15,18,21 * * *'
+    # Comparisons: 8 runs/day every 3 hours
+    - cron: '0 */3 * * *'
   workflow_dispatch:
     inputs:
       posts:
@@ -26,7 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: github.event.schedule == '0 */8 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,26 +35,24 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm ci
-      - name: Generate Blog Posts (3 posts, 1000+ words each)
+      - name: Generate Blog Posts (1 post per run, 3/day total)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           MAX_WORDS: 1500
-        run: npx tsx scripts/autoblog/generate-posts.ts --count=${{ github.event.inputs.posts || '3' }} --min-words=1000
+        run: npx tsx scripts/autoblog/generate-posts.ts --count=1 --min-words=1000
       - name: Commit and Push Blog Posts
         run: |
           git config user.name "ChooseVS Bot"
           git config user.email "bot@choosevs.com"
           mkdir -p public/images
-          mkdir -p public/images
           git add -A src/pages/blog/ public/images/ 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "Blog: ${{ github.event.inputs.posts || '3' }} posts ($(date +%Y-%m-%d))"
+          git diff --staged --quiet || git commit -m "Auto: 1 blog post ($(date +%Y-%m-%d %H:%M))"
           git push
 
   generate-comparisons:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: github.event.schedule == '0 */4 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -65,15 +62,15 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm ci
-      - name: Generate Comparisons (conservative start)
+      - name: Generate Comparisons (1 per run, 8/day total)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: npx tsx scripts/autogenerate/generate-comparisons.ts --count=${{ github.event.inputs.comparisons || '5' }} --images
+        run: npx tsx scripts/autogenerate/generate-comparisons.ts --count=1
       - name: Commit and Push Comparisons
         run: |
           git config user.name "ChooseVS Bot"
           git config user.email "bot@choosevs.com"
           mkdir -p public/images
           git add src/pages/compare/ public/images/ 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "Compare: ${{ github.event.inputs.comparisons || '5' }} pages ($(date +%Y-%m-%d))"
+          git diff --staged --quiet || git commit -m "Auto: 1 comparison ($(date +%Y-%m-%d %H:%M))"
           git push
