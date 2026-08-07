@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE } from '../../lib/constants';
 
-const { frontmatter, rawContent } = Astro.props;
+const { frontmatter } = Astro.props;
 const title = frontmatter.title || 'Blog Post';
 const description = frontmatter.description || '';
 const date = frontmatter.date || new Date().toISOString().slice(0, 10);
@@ -57,7 +57,7 @@ const image = frontmatter.image || '/og-image.jpg';
                     prose-table:rounded-xl prose-table:overflow-hidden
                     prose-th:bg-surface-50 prose-th:px-4 prose-th:py-3
                     prose-td:px-4 prose-td:py-3 prose-td:border-surface-200">
-          <Fragment set:html={rawContent} />
+          <slot />
         </div>
 
         <!-- Tags -->
