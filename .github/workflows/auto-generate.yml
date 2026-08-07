@@ -1,0 +1,68 @@
+name: Auto-Generate Content
+
+on:
+  schedule:
+    # Runs every day at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      posts:
+        description: 'Number of blog posts to generate'
+        required: false
+        default: '10'
+      comparisons:
+        description: 'Number of comparisons to generate'
+        required: false
+        default: '10'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Blog Posts
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: npx tsx scripts/autoblog/generate-posts.ts --count=${{ github.event.inputs.posts || '10' }}
+
+      - name: Generate Comparisons
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: npx tsx scripts/autogenerate/generate-comparisons.ts --count=${{ github.event.inputs.comparisons || '10' }}
+
+      - name: Validate Content
+        run: |
+          npx tsx scripts/autoblog/validate.ts
+          npx tsx scripts/autogenerate/validate.ts
+
+      - name: Count Pages
+        id: count
+        run: |
+          BLOG=$(ls src/pages/blog/*.mdx 2>/dev/null | wc -l)
+          COMPARE=$(ls src/pages/compare/*.mdx 2>/dev/null | wc -l)
+          echo "blog=$BLOG" >> $GITHUB_OUTPUT
+          echo "compare=$COMPARE" >> $GITHUB_OUTPUT
+
+      - name: Commit and Push
+        run: |
+          git config user.name "ChooseVS Bot"
+          git config user.email "bot@choosevs.com"
+          git add src/pages/blog/ src/pages/compare/
+          git diff --staged --quiet || git commit -m "Auto-generate: ${{ steps.count.outputs.blog }} posts, ${{ steps.count.outputs.compare }} comparisons"
+          git push
