@@ -121,6 +121,42 @@ function stripCodeFence(text: string): string {
   return start !== -1 && end > start ? body.slice(start, end + 1) : body.trim();
 }
 
+// Parse JSON with recovery for truncated/malformed responses
+function parseRobustJson(text: string): unknown {
+  try {
+    return JSON.parse(text);
+  } catch {
+    // Continue to recovery
+  }
+  let fixed = text;
+  fixed = fixed.replace(/(?<=:\s*"[^"]*)\n(?=[^"]*")/g, '\\n');
+  fixed = fixed.replace(/(?<=:\s*"[^"]*)\r\n(?=[^"]*")/g, '\\n');
+  fixed = fixed.replace(/,(\s*[}\]])/g, '$1');
+  try {
+    return JSON.parse(fixed);
+  } catch {
+    // Continue
+  }
+  for (let i = fixed.length; i > 0; i--) {
+    try {
+      const parsed = JSON.parse(fixed.slice(0, i));
+      if (typeof parsed === 'object' && parsed !== null) {
+        return parsed;
+      }
+    } catch {
+      // Continue
+    }
+  }
+  for (const suffix of ['"}', '"}', '}', '"]}', ']}', '"}]}}', '"}]}']) {
+    try {
+      return JSON.parse(fixed + suffix);
+    } catch {
+      // Continue
+    }
+  }
+  throw new Error('Unable to parse JSON response');
+}
+
 async function callGemini(prompt: string): Promise<string> {
   const apiKey = getApiKey();
   let lastError: unknown;
@@ -541,7 +577,7 @@ async function generateOne(
 
     let raw: unknown;
     try {
-      raw = JSON.parse(stripCodeFence(await callGemini(prompt)));
+      raw = parseRobustJson(stripCodeFence(await callGemini(prompt)));
     } catch (error) {
       return {
         slug: pair.slug,

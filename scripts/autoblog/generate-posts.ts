@@ -137,6 +137,55 @@ function stripCodeFence(text: string): string {
   return start !== -1 && end > start ? body.slice(start, end + 1) : body.trim();
 }
 
+// Parse JSON with recovery for truncated/malformed responses
+function parseRobustJson(text: string): unknown {
+  // Try direct parse first
+  try {
+    return JSON.parse(text);
+  } catch {
+    // Continue to recovery
+  }
+
+  // Fix common issues: unescaped newlines in strings, trailing commas
+  let fixed = text;
+
+  // Replace literal newlines inside strings with escaped newlines
+  fixed = fixed.replace(/(?<=:\s*"[^"]*)\n(?=[^"]*")/g, '\\n');
+  fixed = fixed.replace(/(?<=:\s*"[^"]*)\r\n(?=[^"]*")/g, '\\n');
+
+  // Remove trailing commas before closing brackets
+  fixed = fixed.replace(/,(\s*[}\]])/g, '$1');
+
+  try {
+    return JSON.parse(fixed);
+  } catch {
+    // Continue to more aggressive recovery
+  }
+
+  // Try to find the largest valid JSON object
+  for (let i = fixed.length; i > 0; i--) {
+    try {
+      const parsed = JSON.parse(fixed.slice(0, i));
+      if (typeof parsed === 'object' && parsed !== null) {
+        return parsed;
+      }
+    } catch {
+      // Continue searching
+    }
+  }
+
+  // Try adding closing braces/brackets
+  for (const suffix of ['"}', '"}', '}', '"]}', ']}', '"}]}}', '"}]}']) {
+    try {
+      return JSON.parse(fixed + suffix);
+    } catch {
+      // Continue
+    }
+  }
+
+  throw new Error('Unable to parse JSON response');
+}
+
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function callGemini(prompt: string): Promise<string> {
@@ -257,7 +306,8 @@ async function generateOne(
 
   let raw: unknown;
   try {
-    raw = JSON.parse(stripCodeFence(await callGemini(prompt)));
+    const text = stripCodeFence(await callGemini(prompt));
+    raw = parseRobustJson(text);
   } catch (error) {
     return {
       slug,
@@ -310,7 +360,7 @@ async function main() {
   }
 
   console.log(
-    `Generating ${keywords.length} post(s) with ${AI_CONFIG.model} → ${path.relative(process.cwd(), options.outputDir)}${options.dryRun ? ' (dry run)' : ''}`
+    `Generating ${keywords.length} post(s) with ${AI_CONFIG.models.join(', ')} → ${path.relative(process.cwd(), options.outputDir)}${options.dryRun ? ' (dry run)' : ''}`
   );
 
   const template = await loadTemplate();
