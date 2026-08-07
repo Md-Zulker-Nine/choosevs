@@ -2,33 +2,48 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { CATEGORIES } from '../../lib/constants';
 
+const POSTS_PER_PAGE = 15;
+
+// Get page number from URL
+const pageParam = new URL(Astro.url.pathname, Astro.url.origin).searchParams.get('page');
+const currentPage = Math.max(1, parseInt(pageParam || '1', 10));
+
 // Dynamically load all blog posts
 const postFiles = import.meta.glob('./[!index]*.mdx', { eager: true });
 
-const BLOG_POSTS = Object.entries(postFiles)
+const allPosts = Object.entries(postFiles)
   .map(([path, module]: [string, any]) => {
     const slug = path.replace('./', '').replace('.mdx', '');
     const frontmatter = module.frontmatter || {};
     return {
       title: frontmatter.title || module.title || slug,
       description: frontmatter.description || '',
-      excerpt: frontmatter.description || '',
       slug,
       date: frontmatter.date || new Date().toISOString().slice(0, 10),
       category: frontmatter.category || 'tech',
       readTime: frontmatter.readTime || '5 min read',
-      featured: false,
     };
   })
   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+const totalPosts = allPosts.length;
+const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+const safePage = Math.min(currentPage, totalPages || 1);
+const startIndex = (safePage - 1) * POSTS_PER_PAGE;
+const pagePosts = allPosts.slice(startIndex, startIndex + POSTS_PER_PAGE);
+
 function getCategory(slug: string) {
   return CATEGORIES.find(c => c.slug === slug);
+}
+
+function getPageUrl(page: number): string {
+  if (page <= 1) return '/blog';
+  return `/blog?page=${page}`;
 }
 ---
 
 <BaseLayout
-  title="Blog - ChooseVS"
+  title={safePage === 1 ? 'Blog - ChooseVS' : `Blog - Page ${safePage} | ChooseVS`}
   description="Expert guides and in-depth analysis on making better comparisons across technology, travel, finance, and more."
 >
   <section class="section-padding">
@@ -41,35 +56,76 @@ function getCategory(slug: string) {
         <p class="text-lg text-surface-600">
           Expert guides, comparison methodologies, and deep dives to help you make better decisions.
         </p>
+        <p class="text-surface-500 mt-2">{totalPosts} articles</p>
       </div>
 
-      <!-- All Posts -->
-      <div>
-        <h2 class="text-2xl font-bold text-surface-900 mb-6">All Articles ({BLOG_POSTS.length})</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {BLOG_POSTS.map((post) => {
-            const cat = getCategory(post.category);
-            return (
-              <a href={`/blog/${post.slug}`} class="card p-6 group cursor-pointer">
-                <div class="flex items-center gap-3 mb-3">
-                  <span class="text-lg">{cat?.icon}</span>
-                  <span class="badge-primary">{cat?.name}</span>
-                </div>
-                <h3 class="text-lg font-bold text-surface-900 group-hover:text-primary-600 transition-colors mb-2">
-                  {post.title}
-                </h3>
-                <p class="text-surface-600 text-sm leading-relaxed mb-4 line-clamp-3">
-                  {post.description || post.excerpt}
-                </p>
-                <div class="flex items-center justify-between text-xs text-surface-500">
-                  <span>{post.date}</span>
-                  <span>{post.readTime}</span>
-                </div>
-              </a>
-            );
-          })}
-        </div>
+      <!-- Posts Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {pagePosts.map((post) => {
+          const cat = getCategory(post.category);
+          return (
+            <a href={`/blog/${post.slug}`} class="card p-6 group cursor-pointer hover:-translate-y-1 transition-all">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="text-lg">{cat?.icon}</span>
+                <span class="badge-primary">{cat?.name}</span>
+              </div>
+              <h3 class="text-lg font-bold text-surface-900 group-hover:text-primary-600 transition-colors mb-2">
+                {post.title}
+              </h3>
+              <p class="text-surface-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                {post.description}
+              </p>
+              <div class="flex items-center justify-between text-xs text-surface-500">
+                <span>{post.date}</span>
+                <span>{post.readTime}</span>
+              </div>
+            </a>
+          );
+        })}
       </div>
+
+      <!-- Pagination -->
+      {totalPages > 1 && (
+        <nav class="flex items-center justify-center gap-2">
+          <!-- Previous -->
+          {safePage > 1 && (
+            <a
+              href={getPageUrl(safePage - 1)}
+              class="inline-flex items-center gap-1 px-4 py-2 rounded-xl border border-surface-200 text-surface-600 hover:border-primary-300 hover:text-primary-600 transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+              Previous
+            </a>
+          )}
+
+          <!-- Page Numbers -->
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            page === safePage ? (
+              <span class="px-4 py-2 rounded-xl bg-primary-600 text-white font-semibold">
+                {page}
+              </span>
+            ) : (
+              <a
+                href={getPageUrl(page)}
+                class="px-4 py-2 rounded-xl border border-surface-200 text-surface-600 hover:border-primary-300 hover:text-primary-600 transition-colors"
+              >
+                {page}
+              </a>
+            )
+          ))}
+
+          <!-- Next -->
+          {safePage < totalPages && (
+            <a
+              href={getPageUrl(safePage + 1)}
+              class="inline-flex items-center gap-1 px-4 py-2 rounded-xl border border-surface-200 text-surface-600 hover:border-primary-300 hover:text-primary-600 transition-colors"
+            >
+              Next
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          )}
+        </nav>
+      )}
     </div>
   </section>
 </BaseLayout>
