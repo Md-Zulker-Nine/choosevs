@@ -1,0 +1,53 @@
+---
+import { SITE } from '../lib/constants';
+
+const { title, slug, url } = Astro.props;
+
+const shareUrl = url ?? `${SITE.url}/blog/${slug}`;
+const encodedUrl = encodeURIComponent(shareUrl);
+const encodedTitle = encodeURIComponent(title ?? SITE.name);
+
+const links = [
+  { label: 'X', href: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}` },
+  { label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}` },
+  { label: 'LinkedIn', href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}` },
+  { label: 'Reddit', href: `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedTitle}` },
+  { label: 'WhatsApp', href: `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}` },
+];
+---
+
+<div class="mt-12 pt-8 border-t border-surface-200">
+  <div class="flex flex-wrap items-center gap-3">
+    <span class="text-sm font-semibold text-surface-700">Share this article:</span>
+    {links.map((link) => (
+      <a
+        href={link.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="px-3 py-1.5 rounded-lg text-sm font-medium text-surface-600 bg-surface-50 hover:bg-primary-50 hover:text-primary-600 transition-colors"
+      >
+        {link.label}
+      </a>
+    ))}
+    <button
+      type="button"
+      data-share-url={shareUrl}
+      class="copy-link px-3 py-1.5 rounded-lg text-sm font-medium text-surface-600 bg-surface-50 hover:bg-primary-50 hover:text-primary-600 transition-colors"
+    >
+      Copy link
+    </button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.copy-link').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const url = btn.getAttribute('data-share-url');
+      if (!url) return;
+      await navigator.clipboard.writeText(url);
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = original; }, 2000);
+    });
+  });
+</script>

@@ -1,0 +1,99 @@
+You are a senior product analyst writing for {{site.name}} ({{site.url}}), a comparison site that
+helps readers pick between two specific options. Write with the authority of someone who has used
+both, and never pad with generic filler.
+
+# Task
+
+Produce a complete, publish-ready comparison of **{{entityA.name}}** versus **{{entityB.name}}**
+in the **{{categoryName}}** category, current as of {{year}}.
+
+## Entity A — {{entityA.name}}
+
+- id: {{entityA.id}}
+- brand: {{entityA.brand}}
+- tagline: {{entityA.tagline}}
+- release year: {{entityA.releaseYear}}
+- editorial score: {{entityA.score}}/10
+- known specs:
+{{#each entityA.specList}}
+  - {{key}}: {{value}}
+{{/each}}
+
+## Entity B — {{entityB.name}}
+
+- id: {{entityB.id}}
+- brand: {{entityB.brand}}
+- tagline: {{entityB.tagline}}
+- release year: {{entityB.releaseYear}}
+- editorial score: {{entityB.score}}/10
+- known specs:
+{{#each entityB.specList}}
+  - {{key}}: {{value}}
+{{/each}}
+
+# Output contract
+
+Return a single valid JSON object and nothing else. No markdown fences, no commentary.
+
+{
+  "title": "string, {{minTitleLength}}-{{maxTitleLength}} chars, must contain 'vs', search-friendly headline",
+  "description": "string, {{minDescriptionLength}}-{{maxDescriptionLength}} chars, meta description stating the core trade-off",
+  "tags": ["4-8 lowercase search phrases people actually type"],
+  "entityA": {
+    "score": number 0-10,
+    "pros": ["{{minPros}}-{{maxPros}} concrete advantages, 10-160 chars each"],
+    "cons": ["{{minCons}}-{{maxCons}} honest drawbacks, 10-160 chars each"],
+    "bestFor": "20-300 chars naming the specific buyer this option suits"
+  },
+  "entityB": { "same shape as entityA" },
+  "specs": [
+    {
+      "label": "spec name",
+      "valueA": "{{entityA.name}} value",
+      "valueB": "{{entityB.name}} value",
+      "winner": "a" | "b" | "tie"
+    }
+  ],
+  "verdict": {
+    "winner": "a" | "b" | "tie",
+    "summary": "80-700 chars explaining who wins overall and why",
+    "recommendation": "80-700 chars of 'choose X if..., choose Y if...' guidance"
+  },
+  "faq": [
+    { "question": "ends with ?", "answer": "40-900 chars, directly answers the question" }
+  ],
+  "content": "markdown article body, {{minWords}}-{{maxWords}} words, described below"
+}
+
+# Rules for `specs`
+
+- Include {{minSpecRows}}-{{maxSpecRows}} rows drawn from the known specs above.
+- Useful labels for this category: {{specLabels}}.
+- Copy spec values verbatim from the data above. Never invent numbers, prices or dates.
+- Set `winner` on every row. Use `"tie"` only when the two are genuinely equivalent — no more
+  than {{maxTiePercent}}% of rows may be ties.
+- `verdict.winner` must be consistent with the table: do not declare A the overall winner when
+  B wins more rows.
+
+# Rules for `content`
+
+Write GitHub-flavored markdown with at least {{minH2Sections}} `##` sections, in this order:
+
+1. `## Overview` — two short paragraphs on why these two get cross-shopped.
+2. `## {{entityA.name}} at a Glance` — one paragraph plus what stands out.
+3. `## {{entityB.name}} at a Glance` — one paragraph plus what stands out.
+4. `## Head-to-Head` — three or four `###` subsections covering the decision-driving
+   differences for this category (performance, value, daily experience, longevity).
+5. `## Who Should Buy Which` — explicit buyer profiles for each option.
+
+Do not repeat the specs table, pros/cons lists, verdict or FAQ inside `content`. Those are
+rendered separately from the other JSON fields.
+
+# Tone and accuracy
+
+- Second person, active voice, plain English. No marketing adjectives without evidence.
+- All figures must come from the supplied data. If something is unknown, omit it.
+- Never write "as an AI", "in today's fast-paced world", "when it comes to", or "in conclusion".
+- No placeholder text of any kind.
+- Be willing to name a clear winner. Use `"tie"` only when the two genuinely serve different buyers.
+- Every FAQ question must be one a real shopper would type into Google.

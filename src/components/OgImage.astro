@@ -1,0 +1,141 @@
+---
+import { SITE } from '../lib/constants';
+
+interface Props {
+  title?: string;
+  entityA: string;
+  entityB: string;
+  width?: number;
+  height?: number;
+  as?: 'img' | 'meta' | 'url';
+  class?: string;
+  alt?: string;
+}
+
+const {
+  title = SITE.name,
+  entityA,
+  entityB,
+  width = 1200,
+  height = 630,
+  as = 'img',
+  class: className = 'w-full h-auto rounded-2xl border border-surface-200 shadow-sm',
+  alt,
+} = Astro.props;
+
+const escapeXml = (value: string) =>
+  String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+
+const fitText = (value: string, max: number) => {
+  const clean = String(value).trim().replace(/\s+/g, ' ');
+  return clean.length > max ? `${clean.slice(0, max - 1).trimEnd()}…` : clean;
+};
+
+const wrapText = (value: string, maxPerLine: number, maxLines: number) => {
+  const words = fitText(value, maxPerLine * maxLines).split(' ');
+  const lines: string[] = [];
+  let current = '';
+
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (candidate.length > maxPerLine && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = candidate;
+    }
+    if (lines.length === maxLines) break;
+  }
+  if (current && lines.length < maxLines) lines.push(current);
+  return lines;
+};
+
+const nameA = fitText(entityA, 22);
+const nameB = fitText(entityB, 22);
+const titleLines = wrapText(title, 46, 2);
+
+const nameSize = (name: string) => (name.length > 16 ? 46 : name.length > 11 ? 56 : 66);
+
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 1200 630" role="img" aria-label="${escapeXml(`${nameA} vs ${nameB}`)}">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#0f172a"/><stop offset="55%" stop-color="#1e293b"/><stop offset="100%" stop-color="#172554"/>
+</linearGradient>
+<linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#d946ef"/>
+</linearGradient>
+<linearGradient id="vs" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#e879f9"/>
+</linearGradient>
+</defs>
+<rect width="1200" height="630" fill="url(#bg)"/>
+<circle cx="130" cy="90" r="240" fill="#3b82f6" opacity="0.14"/>
+<circle cx="1080" cy="560" r="260" fill="#d946ef" opacity="0.14"/>
+<rect x="0" y="0" width="1200" height="6" fill="url(#brand)"/>
+<g transform="translate(72 68)">
+<rect width="54" height="54" rx="15" fill="url(#brand)"/>
+<text x="27" y="35" font-family="Plus Jakarta Sans, Inter, Segoe UI, sans-serif" font-size="21" font-weight="700" fill="#ffffff" text-anchor="middle">VS</text>
+<text x="72" y="36" font-family="Plus Jakarta Sans, Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" fill="#f8fafc">${escapeXml(SITE.name)}</text>
+</g>
+<text x="1128" y="104" font-family="Inter, Segoe UI, sans-serif" font-size="20" font-weight="600" fill="#94a3b8" text-anchor="end" letter-spacing="3">COMPARISON</text>
+<g>
+<rect x="72" y="196" width="470" height="210" rx="28" fill="#ffffff" opacity="0.07"/>
+<rect x="72" y="196" width="470" height="210" rx="28" fill="none" stroke="#ffffff" stroke-opacity="0.16" stroke-width="2"/>
+<text x="307" y="${nameA.length > 16 ? 292 : 300}" font-family="Plus Jakarta Sans, Inter, Segoe UI, sans-serif" font-size="${nameSize(nameA)}" font-weight="800" fill="#ffffff" text-anchor="middle">${escapeXml(nameA)}</text>
+<text x="307" y="356" font-family="Inter, Segoe UI, sans-serif" font-size="20" font-weight="600" fill="#93c5fd" text-anchor="middle" letter-spacing="2">OPTION A</text>
+</g>
+<g>
+<circle cx="600" cy="301" r="62" fill="url(#vs)"/>
+<circle cx="600" cy="301" r="72" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="3"/>
+<text x="600" y="322" font-family="Plus Jakarta Sans, Inter, Segoe UI, sans-serif" font-size="46" font-weight="800" fill="#0f172a" text-anchor="middle">VS</text>
+</g>
+<g>
+<rect x="658" y="196" width="470" height="210" rx="28" fill="#ffffff" opacity="0.07"/>
+<rect x="658" y="196" width="470" height="210" rx="28" fill="none" stroke="#ffffff" stroke-opacity="0.16" stroke-width="2"/>
+<text x="893" y="${nameB.length > 16 ? 292 : 300}" font-family="Plus Jakarta Sans, Inter, Segoe UI, sans-serif" font-size="${nameSize(nameB)}" font-weight="800" fill="#ffffff" text-anchor="middle">${escapeXml(nameB)}</text>
+<text x="893" y="356" font-family="Inter, Segoe UI, sans-serif" font-size="20" font-weight="600" fill="#f0abfc" text-anchor="middle" letter-spacing="2">OPTION B</text>
+</g>
+${titleLines
+  .map(
+    (line, i) =>
+      `<text x="600" y="${482 + i * 44}" font-family="Inter, Segoe UI, sans-serif" font-size="32" font-weight="600" fill="#cbd5e1" text-anchor="middle">${escapeXml(line)}</text>`
+  )
+  .join('')}
+<text x="600" y="586" font-family="Inter, Segoe UI, sans-serif" font-size="22" font-weight="600" fill="#64748b" text-anchor="middle">${escapeXml(SITE.domain)}</text>
+</svg>`
+  .replace(/\n/g, '');
+
+const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+const altText = alt ?? `${nameA} vs ${nameB} — ${title}`;
+---
+
+{as === 'url' && <Fragment set:text={dataUrl} />}
+
+{as === 'meta' && (
+  <Fragment>
+    <meta property="og:image" content={dataUrl} />
+    <meta property="og:image:width" content={String(width)} />
+    <meta property="og:image:height" content={String(height)} />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:alt" content={altText} />
+    <meta name="twitter:image" content={dataUrl} />
+    <meta name="twitter:image:alt" content={altText} />
+  </Fragment>
+)}
+
+{as === 'img' && (
+  <img
+    src={dataUrl}
+    alt={altText}
+    width={width}
+    height={height}
+    loading="lazy"
+    decoding="async"
+    class={className}
+  />
+)}

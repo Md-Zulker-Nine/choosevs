@@ -1,0 +1,204 @@
+---
+const {
+  title = 'Popular Comparisons',
+  subtitle = 'Tap any pair to load it into the generator instantly',
+  compact = false,
+} = Astro.props;
+
+export const POPULAR_PAIRS = [
+  {
+    category: 'Tech',
+    slug: 'tech',
+    icon: '💻',
+    accent: 'from-blue-500 to-cyan-500',
+    pairs: [
+      ['iPhone 16 Pro', 'Samsung Galaxy S25'],
+      ['MacBook Pro', 'Dell XPS 15'],
+      ['PS5', 'Xbox Series X'],
+      ['AirPods Pro', 'Sony WH-1000XM5'],
+    ],
+  },
+  {
+    category: 'AI Models',
+    slug: 'ai-models',
+    icon: '🤖',
+    accent: 'from-fuchsia-500 to-purple-500',
+    pairs: [
+      ['ChatGPT', 'Claude AI'],
+      ['Gemini', 'GPT-4o'],
+      ['Midjourney', 'DALL-E'],
+      ['Copilot', 'Cursor'],
+    ],
+  },
+  {
+    category: 'Movies & TV',
+    slug: 'movies',
+    icon: '🎬',
+    accent: 'from-violet-500 to-indigo-500',
+    pairs: [
+      ['Netflix', 'Disney Plus'],
+      ['Marvel', 'DC'],
+      ['Breaking Bad', 'The Sopranos'],
+      ['HBO Max', 'Apple TV Plus'],
+    ],
+  },
+  {
+    category: 'Cars',
+    slug: 'cars',
+    icon: '🚗',
+    accent: 'from-red-500 to-orange-500',
+    pairs: [
+      ['Tesla Model 3', 'BMW i4'],
+      ['Toyota Camry', 'Honda Accord'],
+      ['Ford F-150', 'Chevy Silverado'],
+      ['Porsche 911', 'Corvette'],
+    ],
+  },
+  {
+    category: 'Countries',
+    slug: 'countries',
+    icon: '🌍',
+    accent: 'from-emerald-500 to-teal-500',
+    pairs: [
+      ['USA', 'Canada'],
+      ['Germany', 'Netherlands'],
+      ['Australia', 'New Zealand'],
+      ['UK', 'Ireland'],
+    ],
+  },
+  {
+    category: 'Travel',
+    slug: 'travel',
+    icon: '✈️',
+    accent: 'from-sky-500 to-blue-500',
+    pairs: [
+      ['Japan', 'Thailand'],
+      ['Paris', 'Rome'],
+      ['Bali', 'Maldives'],
+      ['New York', 'London'],
+    ],
+  },
+  {
+    category: 'Crypto',
+    slug: 'crypto',
+    icon: '₿',
+    accent: 'from-amber-500 to-yellow-500',
+    pairs: [
+      ['Bitcoin', 'Ethereum'],
+      ['Solana', 'Cardano'],
+      ['Coinbase', 'Binance'],
+      ['USDC', 'USDT'],
+    ],
+  },
+];
+
+const groups = compact ? POPULAR_PAIRS.slice(0, 4) : POPULAR_PAIRS;
+---
+
+<section class="popular-pairs" data-popular-pairs>
+  {title && (
+    <div class="text-center mb-8">
+      <h2 class="text-2xl md:text-3xl font-bold mb-2">{title}</h2>
+      {subtitle && <p class="text-surface-600">{subtitle}</p>}
+    </div>
+  )}
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    {groups.map((group, gi) => (
+      <div
+        class="card p-5 pair-group"
+        style={`animation-delay: ${gi * 70}ms`}
+      >
+        <div class="flex items-center gap-2 mb-4">
+          <span class={`w-9 h-9 rounded-xl bg-gradient-to-br ${group.accent} text-white flex items-center justify-center text-lg shadow-sm`}>
+            {group.icon}
+          </span>
+          <h3 class="font-bold text-surface-900">{group.category}</h3>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          {group.pairs.map(([a, b]) => (
+            <button
+              type="button"
+              class="pair-chip group/chip inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-surface-50 border border-surface-200 text-sm font-medium text-surface-700 hover:border-primary-400 hover:bg-primary-50 hover:text-primary-700 active:scale-95 transition-all duration-200"
+              data-entity-a={a}
+              data-entity-b={b}
+              data-category={group.slug}
+            >
+              <span>{a}</span>
+              <span class="text-[10px] font-extrabold text-surface-400 group-hover/chip:text-primary-500 transition-colors">VS</span>
+              <span>{b}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .pair-group {
+    opacity: 0;
+    animation: pairGroupIn 0.5s ease-out forwards;
+  }
+
+  @keyframes pairGroupIn {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pair-group {
+      opacity: 1;
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  function slugifyPart(value) {
+    return value
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+  }
+
+  document.querySelectorAll('[data-popular-pairs] .pair-chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const a = chip.getAttribute('data-entity-a') || '';
+      const b = chip.getAttribute('data-entity-b') || '';
+      const category = chip.getAttribute('data-category') || '';
+
+      const inputA = document.getElementById('entity-a');
+      const inputB = document.getElementById('entity-b');
+      const select = document.getElementById('category');
+
+      if (inputA && inputB) {
+        inputA.value = a;
+        inputB.value = b;
+        if (select && category) select.value = category;
+
+        inputA.dispatchEvent(new Event('input', { bubbles: true }));
+        inputB.dispatchEvent(new Event('input', { bubbles: true }));
+
+        const form = document.getElementById('vs-generator-form');
+        if (form) {
+          form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          form.classList.add('vs-form-pulse');
+          setTimeout(() => form.classList.remove('vs-form-pulse'), 900);
+        }
+      } else {
+        window.location.href = `/compare/${slugifyPart(a)}-vs-${slugifyPart(b)}`;
+      }
+    });
+  });
+</script>

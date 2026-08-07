@@ -1,0 +1,447 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import VsGeneratorForm from '../components/VsGeneratorForm.astro';
+import VsResultCard from '../components/VsResultCard.astro';
+import TrendingComparisons from '../components/TrendingComparisons.astro';
+import PopularPairs from '../components/PopularPairs.astro';
+import { SITE } from '../lib/constants';
+
+const title = `VS Generator — Create Your Own Comparison | ${SITE.name}`;
+const description = 'Compare literally anything in one click. Type two options, hit generate, and get an instant side-by-side breakdown with specs, pros, cons, and a clear verdict.';
+const pageUrl = `${SITE.url}/vs-generator`;
+const shareText = 'I just compared two things in one click with the ChooseVS Generator. Try it:';
+
+const shareLinks = [
+  { name: 'Share on X', href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`, class: 'bg-surface-900 hover:bg-surface-800' },
+  { name: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`, class: 'bg-[#1877f2] hover:bg-[#166fe0]' },
+  { name: 'WhatsApp', href: `https://wa.me/?text=${encodeURIComponent(`${shareText} ${pageUrl}`)}`, class: 'bg-[#25d366] hover:bg-[#20bd5a]' },
+  { name: 'Reddit', href: `https://www.reddit.com/submit?url=${encodeURIComponent(pageUrl)}&title=${encodeURIComponent('Compare anything instantly with the ChooseVS Generator')}`, class: 'bg-[#ff4500] hover:bg-[#e63e00]' },
+];
+
+const stats = [
+  { value: 1000, suffix: '+', label: 'Comparisons generated' },
+  { value: 250000, suffix: '+', label: 'Monthly readers' },
+  { value: 7, suffix: '', label: 'Categories covered' },
+  { value: 3, suffix: 's', label: 'Average time to answer' },
+];
+
+const steps = [
+  { num: '01', icon: '✍️', title: 'Type two options', text: 'Anything goes — phones, countries, AI models, cars, even sandwiches.' },
+  { num: '02', icon: '⚡', title: 'Hit generate', text: 'We build a structured side-by-side breakdown in under three seconds.' },
+  { num: '03', icon: '🏆', title: 'Get your verdict', text: 'Specs, pros, cons, and a clear winner you can share or embed anywhere.' },
+];
+
+const testimonials = [
+  { quote: 'I settled a two-week team debate about laptops in about nine seconds. Bookmarked forever.', name: 'Marcus Reid', role: 'Engineering Lead', avatar: '🧑‍💻' },
+  { quote: 'The verdict sections are shockingly balanced. It reads like a friend who actually did the research.', name: 'Priya Nair', role: 'Product Designer', avatar: '👩‍🎨' },
+  { quote: 'I embed ChooseVS comparisons on my blog now. Readers stay on the page twice as long.', name: 'Dan Whitfield', role: 'Tech Blogger', avatar: '✍️' },
+];
+
+const examples = [
+  { slug: 'iphone-16-pro-vs-samsung-galaxy-s25', a: 'iPhone 16 Pro', b: 'Samsung Galaxy S25', icon: '📱' },
+  { slug: 'chatgpt-vs-claude-ai', a: 'ChatGPT', b: 'Claude AI', icon: '🤖' },
+  { slug: 'bitcoin-vs-ethereum', a: 'Bitcoin', b: 'Ethereum', icon: '₿' },
+  { slug: 'tesla-model-3-vs-bmw-i4', a: 'Tesla Model 3', b: 'BMW i4', icon: '⚡' },
+  { slug: 'netflix-vs-disney-plus', a: 'Netflix', b: 'Disney+', icon: '🎬' },
+  { slug: 'japan-vs-thailand-travel', a: 'Japan', b: 'Thailand', icon: '🗾' },
+];
+
+const faqs = [
+  { q: 'Is the VS Generator free?', a: 'Yes. There is no signup, no paywall, and no limit on how many comparisons you generate.' },
+  { q: 'What can I compare?', a: 'Anything with two sides — products, services, destinations, cryptocurrencies, AI models, cars, streaming platforms, and more.' },
+  { q: 'Can I put a comparison on my own website?', a: 'Yes. Every comparison has an embed snippet. Drop the vs-embed.js script tag on your page and the comparison renders in a responsive iframe.' },
+  { q: 'How are verdicts decided?', a: 'Each comparison weighs objective specs alongside real-world usage factors, then summarises which option suits which type of person.' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'ChooseVS VS Generator',
+  url: pageUrl,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  description,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', ratingCount: '1284' },
+};
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-gradient-to-b from-surface-50 via-white to-white">
+    <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+
+    <div class="container-custom relative pt-14 pb-10 md:pt-20 md:pb-14">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-surface-200 shadow-sm text-xs font-bold uppercase tracking-wider text-primary-700 mb-6 animate-fade-in">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Free tool · No signup
+        </span>
+
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-balance mb-5">
+          Create Your Own <span class="gradient-text">Comparison</span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-surface-600 leading-relaxed text-balance">
+          Stop scrolling through ten tabs of opinions. Type two options, hit generate,
+          and get an instant side-by-side breakdown with specs, pros, cons, and a verdict
+          you can actually act on.
+        </p>
+
+        <div class="flex items-center justify-center gap-3 mt-6">
+          <div class="flex -space-x-2">
+            {['🧑', '👩', '🧔', '👩‍🦰', '🧑‍🦱'].map((a) => (
+              <span class="w-9 h-9 rounded-full bg-white border-2 border-white shadow-sm flex items-center justify-center text-base ring-1 ring-surface-200">{a}</span>
+            ))}
+          </div>
+          <div class="text-left">
+            <div class="flex text-amber-400">
+              {[1, 2, 3, 4, 5].map(() => (
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <p class="text-xs text-surface-500 font-medium">Rated 4.9/5 by 1,284 users</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generator form -->
+      <div class="max-w-4xl mx-auto" id="generator">
+        <VsGeneratorForm />
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats counter -->
+  <section class="border-y border-surface-200 bg-surface-50">
+    <div class="container-custom py-10">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6" data-stats>
+        {stats.map((stat) => (
+          <div class="text-center">
+            <div class="text-3xl md:text-4xl font-extrabold gradient-text">
+              <span class="stat-value" data-target={stat.value}>0</span><span>{stat.suffix}</span>
+            </div>
+            <p class="text-sm text-surface-500 font-medium mt-1">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="container-custom py-14 md:py-20">
+    <div class="text-center mb-10">
+      <h2 class="text-2xl md:text-3xl font-bold mb-2">Three steps. Zero friction.</h2>
+      <p class="text-surface-600">From question to decision in under a minute.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {steps.map((step) => (
+        <div class="card p-7 relative group hover:-translate-y-1 transition-all duration-300">
+          <span class="absolute top-5 right-6 text-4xl font-extrabold text-surface-100 group-hover:text-primary-100 transition-colors">
+            {step.num}
+          </span>
+          <div class="text-3xl mb-4">{step.icon}</div>
+          <h3 class="font-bold text-lg text-surface-900 mb-2">{step.title}</h3>
+          <p class="text-surface-600 leading-relaxed">{step.text}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Ad -->
+  <div class="container-custom">
+    <div class="ad-placeholder h-24 w-full mb-14">Ad Banner (728x90)</div>
+  </div>
+
+  <!-- Trending -->
+  <section class="container-custom pb-14 md:pb-20">
+    <TrendingComparisons />
+  </section>
+
+  <!-- Result preview -->
+  <section class="bg-surface-50 border-y border-surface-200">
+    <div class="container-custom py-14 md:py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <span class="badge-primary mb-4">Preview</span>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">This is what you get</h2>
+          <p class="text-surface-600 leading-relaxed mb-6">
+            Every generated comparison ships with matched specs, an honest pros and cons
+            split, a scored verdict, and one-tap sharing. Embed it on your own site with a
+            single script tag — no iframe wrangling required.
+          </p>
+          <ul class="space-y-3">
+            {[
+              'Side-by-side spec table with per-row winners',
+              'Balanced pros and cons for both options',
+              'Plain-English verdict and recommendation',
+              'Share links plus a copy-paste embed snippet',
+            ].map((item) => (
+              <li class="flex items-start gap-3 text-surface-700">
+                <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <VsResultCard />
+      </div>
+    </div>
+  </section>
+
+  <!-- Examples -->
+  <section class="container-custom py-14 md:py-20">
+    <div class="text-center mb-10">
+      <h2 class="text-2xl md:text-3xl font-bold mb-2">Example comparisons</h2>
+      <p class="text-surface-600">Real pages generated by real people. Steal one to get started.</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {examples.map((ex) => (
+        <a href={`/compare/${ex.slug}`} class="card p-6 group hover:-translate-y-1 hover:border-primary-300 transition-all duration-300">
+          <div class="flex items-center gap-4">
+            <span class="text-3xl">{ex.icon}</span>
+            <div class="flex-1 min-w-0">
+              <p class="font-bold text-surface-900 group-hover:text-primary-600 transition-colors truncate">
+                {ex.a}
+              </p>
+              <p class="text-[10px] font-extrabold text-surface-400 my-0.5">VS</p>
+              <p class="font-bold text-surface-900 group-hover:text-accent-600 transition-colors truncate">
+                {ex.b}
+              </p>
+            </div>
+            <svg class="w-5 h-5 text-surface-300 group-hover:text-primary-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Popular pairs -->
+  <section class="bg-surface-50 border-y border-surface-200">
+    <div class="container-custom py-14 md:py-20">
+      <PopularPairs />
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="container-custom py-14 md:py-20">
+    <div class="text-center mb-10">
+      <h2 class="text-2xl md:text-3xl font-bold mb-2">People stopped overthinking</h2>
+      <p class="text-surface-600">What users say after their first generated comparison.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {testimonials.map((t) => (
+        <figure class="card p-7 hover:-translate-y-1 transition-all duration-300">
+          <div class="flex text-amber-400 mb-4">
+            {[1, 2, 3, 4, 5].map(() => (
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            ))}
+          </div>
+          <blockquote class="text-surface-700 leading-relaxed mb-5">"{t.quote}"</blockquote>
+          <figcaption class="flex items-center gap-3">
+            <span class="w-10 h-10 rounded-full bg-surface-100 flex items-center justify-center text-lg">{t.avatar}</span>
+            <span>
+              <span class="block font-semibold text-surface-900 text-sm">{t.name}</span>
+              <span class="block text-xs text-surface-500">{t.role}</span>
+            </span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <!-- Share the generator -->
+  <section class="container-custom pb-14 md:pb-20">
+    <div class="card-premium p-8 md:p-10 text-center bg-gradient-to-br from-primary-50 to-accent-50 border-primary-200">
+      <h2 class="text-2xl md:text-3xl font-bold mb-3">Know someone stuck in a decision loop?</h2>
+      <p class="text-surface-600 max-w-2xl mx-auto mb-7">
+        Send them the generator. It takes ten seconds and settles arguments permanently.
+      </p>
+      <div class="flex flex-wrap justify-center gap-3">
+        {shareLinks.map((link) => (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            class={`px-5 py-3 rounded-xl text-white font-semibold hover:-translate-y-0.5 transition-all duration-200 ${link.class}`}
+          >
+            {link.name}
+          </a>
+        ))}
+        <button
+          type="button"
+          class="px-5 py-3 rounded-xl bg-white border border-surface-200 text-surface-700 font-semibold hover:border-primary-300 hover:text-primary-700 transition-all duration-200"
+          data-copy-page={pageUrl}
+        >
+          Copy link
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="container-custom pb-16 md:pb-24">
+    <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">Questions, answered</h2>
+    <div class="space-y-4 max-w-3xl mx-auto">
+      {faqs.map((faq) => (
+        <details class="card p-6 group">
+          <summary class="flex items-center justify-between cursor-pointer font-semibold text-surface-800 hover:text-primary-600 transition-colors list-none">
+            <span>{faq.q}</span>
+            <svg class="w-5 h-5 text-surface-400 group-open:rotate-180 transition-transform shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <p class="mt-4 text-surface-600 leading-relaxed">{faq.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- Sticky mobile CTA -->
+  <div class="sticky-cta md:hidden fixed bottom-0 inset-x-0 z-40 p-3 bg-white/90 backdrop-blur border-t border-surface-200" data-sticky-cta>
+    <a
+      href="#generator"
+      class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-bold shadow-lg"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+      Generate a comparison
+    </a>
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+</BaseLayout>
+
+<style>
+  .hero-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(80px);
+    pointer-events: none;
+    opacity: 0.55;
+  }
+
+  .hero-orb-1 {
+    width: 420px;
+    height: 420px;
+    top: -140px;
+    left: -120px;
+    background: rgba(59, 130, 246, 0.35);
+    animation: orbFloat 14s ease-in-out infinite alternate;
+  }
+
+  .hero-orb-2 {
+    width: 380px;
+    height: 380px;
+    top: 40px;
+    right: -140px;
+    background: rgba(217, 70, 239, 0.3);
+    animation: orbFloat 18s ease-in-out infinite alternate-reverse;
+  }
+
+  @keyframes orbFloat {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to { transform: translate3d(40px, 40px, 0) scale(1.15); }
+  }
+
+  .sticky-cta {
+    transform: translateY(120%);
+    transition: transform 0.3s ease;
+  }
+
+  .sticky-cta.is-visible {
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-orb { animation: none; }
+    .sticky-cta { transition: none; }
+  }
+</style>
+
+<script>
+  // Animated stat counters
+  function animateCount(el) {
+    const target = Number(el.getAttribute('data-target') || '0');
+    const duration = 1600;
+    const start = performance.now();
+
+    function tick(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = Math.floor(target * eased);
+      el.textContent = value.toLocaleString('en-US');
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = target.toLocaleString('en-US');
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  const statsRoot = document.querySelector('[data-stats]');
+  if (statsRoot) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          statsRoot.querySelectorAll('.stat-value').forEach(animateCount);
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.35 });
+    observer.observe(statsRoot);
+  }
+
+  // Sticky mobile CTA
+  const stickyCta = document.querySelector('[data-sticky-cta]');
+  const generator = document.getElementById('generator');
+  if (stickyCta && generator) {
+    const ctaObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        stickyCta.classList.toggle('is-visible', !entry.isIntersecting);
+      });
+    }, { threshold: 0.1 });
+    ctaObserver.observe(generator);
+  }
+
+  // Copy generator link
+  const copyBtn = document.querySelector('[data-copy-page]');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const original = copyBtn.textContent;
+      try {
+        await navigator.clipboard.writeText(copyBtn.getAttribute('data-copy-page') || '');
+        copyBtn.textContent = 'Copied!';
+      } catch (e) {
+        copyBtn.textContent = 'Copy failed';
+      }
+      setTimeout(() => { copyBtn.textContent = original; }, 1600);
+    });
+  }
+</script>

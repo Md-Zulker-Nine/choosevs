@@ -1,0 +1,234 @@
+---
+import { SITE } from '../lib/constants';
+
+const {
+  entityA = 'iPhone 16 Pro',
+  entityB = 'Samsung Galaxy S25',
+  slug = 'iphone-16-pro-vs-samsung-galaxy-s25',
+  category = 'Technology',
+  scoreA = 9.2,
+  scoreB = 9.0,
+  verdict = 'Both are exceptional flagships. The iPhone edges ahead on chip performance and video, while the Galaxy wins on value and AI features.',
+  iconA = '📱',
+  iconB = '📱',
+} = Astro.props;
+
+const url = `${SITE.url}/compare/${slug}`;
+const shareText = `${entityA} vs ${entityB} — see the full breakdown on ${SITE.name}`;
+const embedCode = `<script src="${SITE.url}/vs-embed.js" data-compare="${slug}"><\/script>`;
+
+const shareLinks = [
+  { name: 'X', href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`, class: 'bg-surface-900 hover:bg-surface-800' },
+  { name: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, class: 'bg-[#1877f2] hover:bg-[#166fe0]' },
+  { name: 'WhatsApp', href: `https://wa.me/?text=${encodeURIComponent(`${shareText} ${url}`)}`, class: 'bg-[#25d366] hover:bg-[#20bd5a]' },
+  { name: 'Reddit', href: `https://www.reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(shareText)}`, class: 'bg-[#ff4500] hover:bg-[#e63e00]' },
+  { name: 'LinkedIn', href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, class: 'bg-[#0a66c2] hover:bg-[#095aad]' },
+];
+
+const total = scoreA + scoreB;
+const barA = Math.round((scoreA / total) * 100);
+---
+
+<div class="vs-result card-premium overflow-hidden" data-vs-result>
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-primary-600 to-accent-600 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-2 text-white">
+      <span class="w-2 h-2 rounded-full bg-emerald-300 animate-ping"></span>
+      <span class="text-sm font-semibold tracking-wide uppercase">Comparison ready</span>
+    </div>
+    <span class="text-xs font-semibold text-white/80 bg-white/15 px-3 py-1 rounded-full">{category}</span>
+  </div>
+
+  <div class="p-6 md:p-8">
+    <!-- Entities -->
+    <div class="grid grid-cols-[1fr_auto_1fr] gap-3 items-center mb-6">
+      <div class="text-center">
+        <div class="text-4xl md:text-5xl mb-2">{iconA}</div>
+        <h3 class="font-bold text-surface-900 leading-tight">{entityA}</h3>
+        <p class="text-primary-600 font-extrabold text-xl mt-1">{scoreA}</p>
+      </div>
+
+      <div class="w-12 h-12 rounded-full bg-surface-900 text-white text-sm font-extrabold flex items-center justify-center shadow-lg">
+        VS
+      </div>
+
+      <div class="text-center">
+        <div class="text-4xl md:text-5xl mb-2">{iconB}</div>
+        <h3 class="font-bold text-surface-900 leading-tight">{entityB}</h3>
+        <p class="text-accent-600 font-extrabold text-xl mt-1">{scoreB}</p>
+      </div>
+    </div>
+
+    <!-- Score bar -->
+    <div class="h-3 rounded-full bg-surface-100 overflow-hidden flex mb-6">
+      <div class="score-bar-a h-full bg-gradient-to-r from-primary-500 to-primary-400" style={`--bar-width:${barA}%`}></div>
+      <div class="score-bar-b h-full bg-gradient-to-r from-accent-400 to-accent-500 flex-1"></div>
+    </div>
+
+    <!-- Verdict -->
+    <div class="rounded-2xl bg-surface-50 border border-surface-200 p-5 mb-6">
+      <h4 class="flex items-center gap-2 font-bold text-surface-900 mb-2">
+        <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+        Quick verdict
+      </h4>
+      <p class="text-surface-600 leading-relaxed text-sm md:text-base">{verdict}</p>
+    </div>
+
+    <a
+      href={`/compare/${slug}`}
+      class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-surface-900 text-white font-bold hover:bg-surface-800 hover:-translate-y-0.5 transition-all duration-200 mb-6"
+    >
+      Read the full comparison
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </a>
+
+    <!-- Share -->
+    <div class="mb-5">
+      <p class="text-xs font-semibold uppercase tracking-wider text-surface-400 mb-3">Share this comparison</p>
+      <div class="flex flex-wrap gap-2">
+        {shareLinks.map((link) => (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            class={`px-4 py-2 rounded-xl text-white text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 ${link.class}`}
+          >
+            {link.name}
+          </a>
+        ))}
+        <button
+          type="button"
+          class="px-4 py-2 rounded-xl bg-surface-100 text-surface-700 text-sm font-semibold hover:bg-surface-200 transition-all duration-200"
+          data-copy-link={url}
+        >
+          Copy link
+        </button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-wrap gap-3 pt-5 border-t border-surface-200">
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-surface-200 text-sm font-semibold text-surface-700 hover:border-primary-300 hover:text-primary-700 transition-colors"
+        data-toggle-embed
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+        Embed this
+      </button>
+
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-surface-200 text-sm font-semibold text-surface-700 hover:border-accent-300 hover:text-accent-700 transition-colors"
+        data-regenerate
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582M20 20v-5h-.581M5.635 18.364A9 9 0 0119.418 9M18.365 5.636A9 9 0 014.582 15" />
+        </svg>
+        Regenerate
+      </button>
+    </div>
+
+    <!-- Embed panel -->
+    <div class="hidden mt-4" data-embed-panel>
+      <p class="text-xs font-semibold uppercase tracking-wider text-surface-400 mb-2">Paste this on your site</p>
+      <div class="relative">
+        <pre class="bg-surface-900 text-surface-100 text-xs md:text-sm rounded-xl p-4 overflow-x-auto"><code data-embed-code>{embedCode}</code></pre>
+        <button
+          type="button"
+          class="absolute top-2 right-2 px-3 py-1.5 rounded-lg bg-white/10 text-white text-xs font-semibold hover:bg-white/20 transition-colors"
+          data-copy-embed
+        >
+          Copy
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .vs-result {
+    animation: resultIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes resultIn {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .score-bar-a {
+    width: 0;
+    animation: barGrow 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes barGrow {
+    to { width: var(--bar-width); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vs-result { animation: none; }
+    .score-bar-a { width: var(--bar-width); animation: none; }
+  }
+</style>
+
+<script>
+  function flash(button, text) {
+    const original = button.textContent;
+    button.textContent = text;
+    setTimeout(() => { button.textContent = original; }, 1600);
+  }
+
+  async function copy(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  document.querySelectorAll('[data-vs-result]').forEach((root) => {
+    const linkBtn = root.querySelector('[data-copy-link]');
+    if (linkBtn) {
+      linkBtn.addEventListener('click', async () => {
+        const ok = await copy(linkBtn.getAttribute('data-copy-link') || '');
+        flash(linkBtn, ok ? 'Copied!' : 'Copy failed');
+      });
+    }
+
+    const toggle = root.querySelector('[data-toggle-embed]');
+    const panel = root.querySelector('[data-embed-panel]');
+    if (toggle && panel) {
+      toggle.addEventListener('click', () => panel.classList.toggle('hidden'));
+    }
+
+    const embedBtn = root.querySelector('[data-copy-embed]');
+    const embedCode = root.querySelector('[data-embed-code]');
+    if (embedBtn && embedCode) {
+      embedBtn.addEventListener('click', async () => {
+        const ok = await copy(embedCode.textContent || '');
+        flash(embedBtn, ok ? 'Copied!' : 'Failed');
+      });
+    }
+
+    const regen = root.querySelector('[data-regenerate]');
+    if (regen) {
+      regen.addEventListener('click', () => {
+        const form = document.getElementById('vs-generator-form');
+        if (form) {
+          form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const inputA = document.getElementById('entity-a');
+          if (inputA) setTimeout(() => inputA.focus(), 450);
+        } else {
+          window.location.href = '/vs-generator';
+        }
+      });
+    }
+  });
+</script>

@@ -1,0 +1,324 @@
+---
+import { CATEGORIES } from '../lib/constants';
+
+const {
+  defaultA = '',
+  defaultB = '',
+  defaultCategory = 'tech',
+} = Astro.props;
+
+const SUGGESTIONS = [
+  { label: 'iPhone vs Samsung', a: 'iPhone 16 Pro', b: 'Samsung Galaxy S25', category: 'tech' },
+  { label: 'ChatGPT vs Claude', a: 'ChatGPT', b: 'Claude AI', category: 'ai-models' },
+  { label: 'Netflix vs Disney+', a: 'Netflix', b: 'Disney Plus', category: 'movies' },
+  { label: 'Bitcoin vs Ethereum', a: 'Bitcoin', b: 'Ethereum', category: 'crypto' },
+  { label: 'Tesla vs BMW', a: 'Tesla Model 3', b: 'BMW i4', category: 'cars' },
+  { label: 'Japan vs Thailand', a: 'Japan', b: 'Thailand', category: 'travel' },
+  { label: 'USA vs Canada', a: 'USA', b: 'Canada', category: 'countries' },
+  { label: 'MacBook vs XPS', a: 'MacBook Pro', b: 'Dell XPS 15', category: 'tech' },
+];
+---
+
+<form
+  id="vs-generator-form"
+  class="vs-form card-premium p-6 md:p-10 relative overflow-hidden"
+  novalidate
+>
+  <div class="vs-form-glow" aria-hidden="true"></div>
+
+  <div class="relative">
+    <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-3 items-end">
+      <!-- Entity A -->
+      <div class="vs-field">
+        <label for="entity-a" class="block text-sm font-semibold text-surface-700 mb-2">
+          First option
+        </label>
+        <input
+          id="entity-a"
+          name="entity-a"
+          type="text"
+          autocomplete="off"
+          value={defaultA}
+          placeholder="e.g. iPhone 16 Pro"
+          maxlength="60"
+          class="w-full px-5 py-4 md:py-5 text-base md:text-lg font-semibold rounded-2xl border-2 border-surface-200 bg-white text-surface-900 placeholder:text-surface-400 placeholder:font-normal focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all duration-200"
+        />
+        <p class="vs-error hidden mt-2 text-sm font-medium text-red-600" data-error-for="entity-a">
+          Please enter something to compare.
+        </p>
+      </div>
+
+      <!-- VS badge -->
+      <div class="flex md:pb-4 items-center justify-center">
+        <div class="vs-badge w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 text-white font-extrabold text-lg md:text-xl flex items-center justify-center shadow-lg shadow-primary-500/30 select-none">
+          VS
+        </div>
+      </div>
+
+      <!-- Entity B -->
+      <div class="vs-field">
+        <label for="entity-b" class="block text-sm font-semibold text-surface-700 mb-2">
+          Second option
+        </label>
+        <input
+          id="entity-b"
+          name="entity-b"
+          type="text"
+          autocomplete="off"
+          value={defaultB}
+          placeholder="e.g. Samsung Galaxy S25"
+          maxlength="60"
+          class="w-full px-5 py-4 md:py-5 text-base md:text-lg font-semibold rounded-2xl border-2 border-surface-200 bg-white text-surface-900 placeholder:text-surface-400 placeholder:font-normal focus:outline-none focus:border-accent-500 focus:ring-4 focus:ring-accent-100 transition-all duration-200"
+        />
+        <p class="vs-error hidden mt-2 text-sm font-medium text-red-600" data-error-for="entity-b">
+          Please enter something to compare.
+        </p>
+      </div>
+    </div>
+
+    <!-- Category + CTA -->
+    <div class="grid grid-cols-1 sm:grid-cols-[minmax(0,260px)_1fr] gap-4 mt-6">
+      <div>
+        <label for="category" class="block text-sm font-semibold text-surface-700 mb-2">
+          Category
+        </label>
+        <select
+          id="category"
+          name="category"
+          class="w-full px-4 py-4 rounded-2xl border-2 border-surface-200 bg-white text-surface-800 font-medium focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all duration-200"
+        >
+          {CATEGORIES.map((cat) => (
+            <option value={cat.slug} selected={cat.slug === defaultCategory}>
+              {cat.icon} {cat.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div class="flex items-end">
+        <button
+          type="submit"
+          id="generate-btn"
+          class="vs-cta w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-primary-600 to-accent-600 text-white text-lg font-bold shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-4 focus:ring-primary-200 transition-all duration-200"
+        >
+          <svg class="w-5 h-5 vs-cta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span data-cta-label>Generate Comparison</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="mt-7">
+      <p class="text-xs font-semibold uppercase tracking-wider text-surface-400 mb-3">
+        Popular right now
+      </p>
+      <div class="flex flex-wrap gap-2">
+        {SUGGESTIONS.map((s, i) => (
+          <button
+            type="button"
+            class="suggestion-chip px-3.5 py-2 rounded-full bg-surface-50 border border-surface-200 text-sm font-medium text-surface-600 hover:bg-primary-50 hover:border-primary-300 hover:text-primary-700 active:scale-95 transition-all duration-200"
+            style={`animation-delay: ${i * 50}ms`}
+            data-entity-a={s.a}
+            data-entity-b={s.b}
+            data-category={s.category}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <p class="mt-6 text-center text-sm text-surface-500">
+      Free forever. No signup. Instant results.
+    </p>
+  </div>
+</form>
+
+<style>
+  .vs-form {
+    position: relative;
+  }
+
+  .vs-form-glow {
+    position: absolute;
+    inset: -40%;
+    background:
+      radial-gradient(40% 40% at 20% 20%, rgba(59, 130, 246, 0.14), transparent 70%),
+      radial-gradient(40% 40% at 80% 80%, rgba(217, 70, 239, 0.14), transparent 70%);
+    animation: glowDrift 12s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  @keyframes glowDrift {
+    from { transform: translate3d(-3%, -2%, 0) scale(1); }
+    to { transform: translate3d(3%, 2%, 0) scale(1.08); }
+  }
+
+  .vs-badge {
+    animation: vsPulse 2.6s ease-in-out infinite;
+  }
+
+  @keyframes vsPulse {
+    0%, 100% { transform: scale(1) rotate(0deg); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
+    50% { transform: scale(1.08) rotate(-3deg); box-shadow: 0 16px 34px -6px rgba(217, 70, 239, 0.45); }
+  }
+
+  .vs-cta-icon {
+    transition: transform 0.2s ease;
+  }
+
+  .vs-cta:hover .vs-cta-icon {
+    transform: translateX(2px) scale(1.12);
+  }
+
+  .vs-cta.is-loading {
+    pointer-events: none;
+    opacity: 0.85;
+  }
+
+  .vs-cta.is-loading .vs-cta-icon {
+    animation: ctaSpin 0.8s linear infinite;
+  }
+
+  @keyframes ctaSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  .vs-field input.is-invalid {
+    border-color: #ef4444;
+    animation: shake 0.35s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  :global(.vs-form-pulse) {
+    animation: formPulse 0.9s ease;
+  }
+
+  @keyframes formPulse {
+    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.45); }
+    100% { box-shadow: 0 0 0 22px rgba(59, 130, 246, 0); }
+  }
+
+  .suggestion-chip {
+    opacity: 0;
+    animation: chipIn 0.4s ease-out forwards;
+  }
+
+  @keyframes chipIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vs-form-glow,
+    .vs-badge,
+    .suggestion-chip {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>
+
+<script is:inline>
+  function slugifyEntity(value) {
+    return value
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+  }
+
+  function generateComparison() {
+    const a = document.getElementById('entity-a').value.trim().toLowerCase().replace(/\s+/g, '-');
+    const b = document.getElementById('entity-b').value.trim().toLowerCase().replace(/\s+/g, '-');
+    if (a && b) {
+      window.location.href = `/compare/${a}-vs-${b}`;
+    }
+  }
+
+  window.generateComparison = generateComparison;
+
+  (function initVsGenerator() {
+    const form = document.getElementById('vs-generator-form');
+    if (!form) return;
+
+    const inputA = document.getElementById('entity-a');
+    const inputB = document.getElementById('entity-b');
+    const select = document.getElementById('category');
+    const btn = document.getElementById('generate-btn');
+    const label = form.querySelector('[data-cta-label]');
+
+    function setError(input, show) {
+      const msg = form.querySelector(`[data-error-for="${input.id}"]`);
+      input.classList.toggle('is-invalid', show);
+      if (msg) msg.classList.toggle('hidden', !show);
+    }
+
+    [inputA, inputB].forEach((input) => {
+      input.addEventListener('input', () => {
+        if (input.value.trim()) setError(input, false);
+      });
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const rawA = inputA.value.trim();
+      const rawB = inputB.value.trim();
+      let valid = true;
+
+      if (!rawA) { setError(inputA, true); valid = false; }
+      if (!rawB) { setError(inputB, true); valid = false; }
+      if (!valid) {
+        (rawA ? inputB : inputA).focus();
+        return;
+      }
+
+      const a = slugifyEntity(rawA);
+      const b = slugifyEntity(rawB);
+      if (!a || !b) return;
+
+      btn.classList.add('is-loading');
+      if (label) label.textContent = 'Generating…';
+
+      try {
+        const recent = JSON.parse(localStorage.getItem('choosevs:recent') || '[]');
+        recent.unshift({ a: rawA, b: rawB, slug: `${a}-vs-${b}`, category: select ? select.value : '' });
+        localStorage.setItem('choosevs:recent', JSON.stringify(recent.slice(0, 8)));
+      } catch (e) {
+        /* storage unavailable */
+      }
+
+      window.setTimeout(() => {
+        window.location.href = `/compare/${a}-vs-${b}`;
+      }, 350);
+    });
+
+    form.querySelectorAll('.suggestion-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        inputA.value = chip.getAttribute('data-entity-a') || '';
+        inputB.value = chip.getAttribute('data-entity-b') || '';
+        const cat = chip.getAttribute('data-category');
+        if (select && cat) select.value = cat;
+        setError(inputA, false);
+        setError(inputB, false);
+        form.classList.add('vs-form-pulse');
+        setTimeout(() => form.classList.remove('vs-form-pulse'), 900);
+      });
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('a')) inputA.value = params.get('a');
+    if (params.get('b')) inputB.value = params.get('b');
+    if (params.get('category') && select) select.value = params.get('category');
+  })();
+</script>

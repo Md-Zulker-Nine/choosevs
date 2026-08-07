@@ -1,0 +1,265 @@
+---
+import { SITE } from '../lib/constants';
+import { qrDataUri } from '../lib/qr';
+
+interface Props {
+  title?: string;
+  url?: string;
+  description?: string;
+  triggerLabel?: string;
+  id?: string;
+}
+
+const {
+  title = SITE.name,
+  url = new URL(Astro.url.pathname, SITE.url).href,
+  description = SITE.description,
+  triggerLabel = 'Share',
+  id = 'share-popup',
+} = Astro.props;
+
+const encTitle = encodeURIComponent(title);
+const encUrl = encodeURIComponent(url);
+
+const networks = [
+  {
+    name: 'X',
+    label: 'Share on X (Twitter)',
+    href: `https://twitter.com/intent/tweet?text=${encTitle}&url=${encUrl}`,
+    classes: 'bg-black hover:bg-surface-800',
+    path: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
+  },
+  {
+    name: 'Facebook',
+    label: 'Share on Facebook',
+    href: `https://www.facebook.com/sharer/sharer.php?u=${encUrl}`,
+    classes: 'bg-[#1877F2] hover:bg-[#0d65d9]',
+    path: 'M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 3.937 23.094 9.101 24v-8.437H6.627v-3.49h2.474V9.412c0-3.297 1.792-5.117 4.533-5.117 1.313 0 2.686.334 2.686.334v2.97h-1.513c-1.49 0-1.955.985-1.955 1.995v2.399h3.328l-.532 3.49h-2.796V24C20.063 23.094 24 18.1 24 12.073z',
+  },
+  {
+    name: 'Pinterest',
+    label: 'Share on Pinterest',
+    href: `https://pinterest.com/pin/create/button/?url=${encUrl}&description=${encTitle}`,
+    classes: 'bg-[#E60023] hover:bg-[#c1001d]',
+    path: 'M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345c-.091.379-.293 1.194-.333 1.361-.052.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.608 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z',
+  },
+  {
+    name: 'Reddit',
+    label: 'Share on Reddit',
+    href: `https://reddit.com/submit?url=${encUrl}&title=${encTitle}`,
+    classes: 'bg-[#FF4500] hover:bg-[#d93a00]',
+    path: 'M24 11.779c0-1.459-1.192-2.645-2.657-2.645-.715 0-1.363.286-1.84.746-1.81-1.191-4.259-1.949-6.971-2.046l1.483-4.669 4.016.941-.006.058c0 1.193.975 2.163 2.174 2.163 1.198 0 2.172-.97 2.172-2.163s-.974-2.164-2.172-2.164c-.92 0-1.704.574-2.021 1.379l-4.329-1.015a.484.484 0 00-.579.312L11.582 7.85c-2.758.064-5.253.822-7.088 2.03a2.646 2.646 0 00-1.837-.746C1.192 9.134 0 10.32 0 11.779c0 .977.537 1.826 1.331 2.288a4.51 4.51 0 00-.065.745c0 3.717 4.348 6.741 9.692 6.741 5.346 0 9.694-3.024 9.694-6.741 0-.245-.024-.489-.067-.729A2.633 2.633 0 0024 11.779zM7.065 13.913c0-.834.679-1.513 1.514-1.513.835 0 1.514.679 1.514 1.513a1.515 1.515 0 01-1.514 1.512 1.514 1.514 0 01-1.514-1.512zm8.309 4.194c-.828.826-2.164 1.227-4.084 1.227l-.014-.002-.013.002c-1.922 0-3.258-.401-4.086-1.227a.485.485 0 01.686-.686c.639.639 1.767.949 3.4.949l.013.002.014-.002c1.632 0 2.76-.31 3.399-.949a.485.485 0 11.685.686zM15.415 15.425a1.515 1.515 0 01-1.513-1.512c0-.834.678-1.513 1.513-1.513s1.514.679 1.514 1.513c0 .833-.679 1.512-1.514 1.512z',
+  },
+  {
+    name: 'WhatsApp',
+    label: 'Share on WhatsApp',
+    href: `https://wa.me/?text=${encTitle}%20${encUrl}`,
+    classes: 'bg-[#25D366] hover:bg-[#1da851]',
+    path: 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z',
+  },
+  {
+    name: 'Email',
+    label: 'Share via Email',
+    href: `mailto:?subject=${encTitle}&body=${encUrl}`,
+    classes: 'bg-surface-600 hover:bg-surface-700',
+    path: 'M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67zM22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z',
+  },
+];
+
+const qr = qrDataUri(url, { size: 160, margin: 2 });
+const dialogId = `${id}-dialog`;
+const titleId = `${id}-title`;
+---
+
+<button
+  type="button"
+  data-share-popup-open={id}
+  aria-haspopup="dialog"
+  aria-controls={dialogId}
+  class="btn-secondary text-sm py-2 px-4 gap-2"
+>
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342a3 3 0 100-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684zm0-12a3 3 0 105.368-2.684 3 3 0 00-5.368 2.684z" />
+  </svg>
+  {triggerLabel}
+</button>
+
+<div
+  id={dialogId}
+  data-share-popup={id}
+  data-share-url={url}
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby={titleId}
+  class="hidden fixed inset-0 z-[100] items-center justify-center bg-surface-900/60 backdrop-blur-sm p-4"
+>
+  <div
+    data-share-panel
+    class="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl border border-surface-200 shadow-2xl animate-fade-in"
+  >
+    <div class="flex items-start justify-between gap-4 p-5 sm:p-6 border-b border-surface-100">
+      <div class="min-w-0">
+        <h2 id={titleId} class="font-display text-lg sm:text-xl text-surface-900">Share this comparison</h2>
+        <p class="mt-1 text-sm text-surface-500 line-clamp-2">{title}</p>
+      </div>
+      <button
+        type="button"
+        data-share-popup-close
+        aria-label="Close share dialog"
+        class="shrink-0 p-2 -m-1 rounded-lg text-surface-400 hover:text-surface-700 hover:bg-surface-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="p-5 sm:p-6 space-y-6">
+      <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+        {networks.map(n => (
+          <a
+            href={n.href}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            aria-label={n.label}
+            class="group flex flex-col items-center gap-2 p-3 rounded-xl border border-surface-200 hover:border-surface-300 hover:bg-surface-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            <span class={`flex items-center justify-center w-11 h-11 rounded-full text-white transition-transform duration-200 group-hover:scale-110 ${n.classes}`}>
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d={n.path} />
+              </svg>
+            </span>
+            <span class="text-xs font-medium text-surface-600">{n.name}</span>
+          </a>
+        ))}
+
+        <button
+          type="button"
+          data-native-share
+          aria-label="Open device share menu"
+          class="group hidden flex-col items-center gap-2 p-3 rounded-xl border border-surface-200 hover:border-surface-300 hover:bg-surface-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
+        >
+          <span class="flex items-center justify-center w-11 h-11 rounded-full text-white bg-gradient-to-br from-primary-500 to-accent-500 transition-transform duration-200 group-hover:scale-110">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342a3 3 0 100-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684zm0-12a3 3 0 105.368-2.684 3 3 0 00-5.368 2.684z" />
+            </svg>
+          </span>
+          <span class="text-xs font-medium text-surface-600">More</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl bg-surface-50 border border-surface-200">
+        <img src={qr} alt={`QR code linking to ${url}`} width="120" height="120" class="w-28 h-28 rounded-lg bg-white p-1.5 border border-surface-200" loading="lazy" />
+        <div class="text-center sm:text-left">
+          <p class="font-semibold text-surface-800 text-sm">Scan to open on mobile</p>
+          <p class="mt-1 text-xs text-surface-500">Point your phone camera at the code to continue reading on another device.</p>
+        </div>
+      </div>
+
+      <div>
+        <label for={`${id}-url`} class="block text-xs font-semibold uppercase tracking-wider text-surface-400 mb-2">
+          Page link
+        </label>
+        <div class="flex gap-2">
+          <input
+            id={`${id}-url`}
+            data-share-input
+            type="text"
+            readonly
+            value={url}
+            aria-label="Page link"
+            class="flex-1 min-w-0 px-3 py-2.5 text-sm rounded-xl border border-surface-200 bg-surface-50 text-surface-700 outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          />
+          <button
+            type="button"
+            data-share-copy
+            class="btn-primary text-sm py-2.5 px-4 shrink-0"
+          >
+            <span data-copy-text>Copy</span>
+          </button>
+        </div>
+        <p data-copy-status role="status" aria-live="polite" class="mt-2 text-xs font-medium text-emerald-600 opacity-0 transition-opacity duration-200">
+          Link copied to clipboard
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-share-popup]').forEach((dialog) => {
+    const id = dialog.getAttribute('data-share-popup');
+    const openBtns = document.querySelectorAll(`[data-share-popup-open="${id}"]`);
+    const panel = dialog.querySelector('[data-share-panel]');
+    const closeBtn = dialog.querySelector('[data-share-popup-close]');
+    const copyBtn = dialog.querySelector('[data-share-copy]');
+    const copyText = dialog.querySelector('[data-copy-text]');
+    const status = dialog.querySelector('[data-copy-status]');
+    const input = dialog.querySelector('[data-share-input]');
+    const nativeBtn = dialog.querySelector('[data-native-share]');
+    const url = dialog.getAttribute('data-share-url') || window.location.href;
+
+    let lastFocused = null;
+    let timer;
+
+    const open = () => {
+      lastFocused = document.activeElement;
+      dialog.classList.remove('hidden');
+      dialog.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      closeBtn?.focus();
+    };
+
+    const close = () => {
+      dialog.classList.add('hidden');
+      dialog.classList.remove('flex');
+      document.body.style.overflow = '';
+      if (lastFocused instanceof HTMLElement) lastFocused.focus();
+    };
+
+    openBtns.forEach(btn => btn.addEventListener('click', open));
+    closeBtn?.addEventListener('click', close);
+
+    dialog.addEventListener('click', (e) => {
+      if (!panel?.contains(e.target)) close();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !dialog.classList.contains('hidden')) close();
+    });
+
+    if (navigator.share && nativeBtn) {
+      nativeBtn.classList.remove('hidden');
+      nativeBtn.classList.add('flex');
+      nativeBtn.addEventListener('click', () => {
+        navigator.share({ title: document.title, url }).catch(() => {});
+      });
+    }
+
+    copyBtn?.addEventListener('click', async () => {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(url);
+        } else if (input instanceof HTMLInputElement) {
+          input.select();
+          document.execCommand('copy');
+        }
+        if (copyText) copyText.textContent = 'Copied';
+        status?.classList.replace('opacity-0', 'opacity-100');
+      } catch {
+        if (status) {
+          status.textContent = 'Copy failed — select the link manually';
+          status.classList.remove('text-emerald-600');
+          status.classList.add('text-amber-600');
+          status.classList.replace('opacity-0', 'opacity-100');
+        }
+      }
+
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (copyText) copyText.textContent = 'Copy';
+        status?.classList.replace('opacity-100', 'opacity-0');
+      }, 2000);
+    });
+  });
+</script>
