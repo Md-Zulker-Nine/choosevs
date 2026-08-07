@@ -7,7 +7,7 @@ export const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
 
 export const AI_CONFIG = {
   provider: 'google' as const,
-  model: 'gemini-2.0-flash',
+  model: 'gemini-2.5-flash',
   apiBaseUrl: 'https://generativelanguage.googleapis.com/v1beta',
   apiKeyEnvVar: 'GEMINI_API_KEY',
   maxTokens: 4000,
